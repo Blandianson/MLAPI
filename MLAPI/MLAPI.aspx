@@ -11,9 +11,9 @@
     <form id="form1" runat="server">
         <div id="wrapperForm">
             <h3><asp:Label runat="server" ID="apiUrlLabel" CssClass="fieldLabel">API URL:</asp:Label></h3>
-            <asp:TextBox id="ApiUrl" runat="server" AutoPostBack="True" OnTextChanged="uiUpdatePrism_Click" CssClass="textIObox" Wrap="false"/>
+            <asp:TextBox id="ApiUrl" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes"/>
             <h3><asp:Label runat="server" ID="dataLabel" CssClass="fieldLabel">Input Data:</asp:Label></h3>
-            <asp:TextBox id="data" runat="server" CssClass="textIObox" Wrap="false"/>
+            <asp:TextBox id="data" runat="server" Wrap="false" cssClass="inputTBoxes"/>
             <asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="submitApiData_Click"/>
             <div id="resultBox">
                 <h3><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Results:</asp:Label></h3>

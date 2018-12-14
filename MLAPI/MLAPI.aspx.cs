@@ -288,13 +288,15 @@ namespace HaloBI.Prism.Plugin
 
         protected void submitApiData_Click(object sender, EventArgs e)
         {
+            ApiUrl.Text = "Data has been retrieved";
             data.Text = "Data has been retrieved";
+            postData.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
         }
 
         protected void uiUpdatePrism_Click(object sender, EventArgs e)
         {
             //uiSelectedMembers.Text = uiMembersList.SelectedItem.Text;
-            ApiUrl.Text = "Data has been retrieved";
         }
     }
 }
