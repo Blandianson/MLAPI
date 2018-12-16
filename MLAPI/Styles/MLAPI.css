@@ -17,10 +17,9 @@ body {
     margin-top: 4px;
     margin-left: 15px;
     margin-right: 15px;
-
     border-radius: 4px;
     border-width: 2.5px;
-    height: 30px;
+    height: 40px;
     width: 95%;
     border-color: #b0b3b5;
     background-color: #DCDDDE;
@@ -47,9 +46,6 @@ body {
     #call:hover {
         background-color: #3e4042;
     }
-#resultLabel {
-    padding-top:50px;
-}
 #postData {
     margin-top: 4px;
     margin-left: 15px;
@@ -69,10 +65,11 @@ body {
 #wrapperForm {
     clear: both;
 }
-h3{
-    margin-top:20px;
-    margin-bottom:5px;
+.header {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-family: "Segoe UI", Verdana, sans-serif;
 }
 #resultBox{
-    margin-top:50px;
+    margin-top:60px;
 }

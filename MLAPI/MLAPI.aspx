@@ -10,13 +10,13 @@
 <body>
     <form id="form1" runat="server">
         <div id="wrapperForm">
-            <h3><asp:Label runat="server" ID="apiUrlLabel" CssClass="fieldLabel">API URL:</asp:Label></h3>
-            <asp:TextBox id="ApiUrl" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes"/>
-            <h3><asp:Label runat="server" ID="dataLabel" CssClass="fieldLabel">Input Data:</asp:Label></h3>
-            <asp:TextBox id="data" runat="server" Wrap="false" cssClass="inputTBoxes"/>
+            <div class="header"><asp:Label runat="server" ID="apiUrlLabel" CssClass="fieldLabel">API URL:</asp:Label></div>
+            <asp:TextBox id="ApiUrl" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine"/>
+            <div class="header"><asp:Label runat="server" ID="dataLabel" CssClass="fieldLabel">Input Data:</asp:Label></div>
+            <asp:TextBox id="data" runat="server" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine"/>
             <asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="submitApiData_Click"/>
             <div id="resultBox">
-                <h3><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Results:</asp:Label></h3>
+                <div class="header"><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Results:</asp:Label></div>
                 <asp:textbox id="postData" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
             </div>
         </div>
