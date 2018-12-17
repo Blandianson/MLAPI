@@ -17,6 +17,7 @@
             <asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="submitApiData_Click"/>
             <div id="resultBox">
                 <div class="header"><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Results:</asp:Label></div>
+                <asp:Button ID="copyAll" runat="server" text="Copy All" AutoPostBack="True" onclick="rabbitMessaging_click"/>
                 <asp:textbox id="postData" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
             </div>
         </div>

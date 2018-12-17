@@ -299,35 +299,29 @@ namespace HaloBI.Prism.Plugin
 
         protected void rabbitMessaging_click(object sender, EventArgs e)
         {
-            //var factory = new ConnectionFactory() { HostName = "localhost" };
-            //using (var connection = factory.CreateConnection())
-            //using (var channel = connection.CreateModel())
-            //{
-            //    channel.ExchangeDeclare(exchange: "direct_logs",
-            //                            type: "direct");
+        postData.Text = "It worked!";
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "hello",
+                                        durable: false,
+                                        exclusive: false,
+                                        autoDelete: false,
+                                        arguments: null);
 
-            //    var severity = (args.Length > 0) ? args[0] : "info";
-            //    var message = (args.Length > 1)
-            //                  ? string.Join(" ", args.Skip(1).ToArray())
-            //                  : "Hello World!";
-            //    var body = Encoding.UTF8.GetBytes(message);
-            //    channel.BasicPublish(exchange: "direct_logs",
-            //                         routingKey: severity,
-            //                         basicProperties: null,
-            //                         body: body);
+                string message = "Hello World!";
+                var body = Encoding.UTF8.GetBytes(message);
 
-            String exchangeName = "machLearn";
-            //IModel model = null;
-            //var queueName = "firstMessages";
-            ////ConnectionFactory factory = new ConnectionFactory();
-            //var factory = new ConnectionFactory() { HostName = "localhost" };
-            //IConnection conn = factory.CreateConnection();
-            //IModel channel = conn.CreateModel();
-            //model.ExchangeDeclare(exchangeName, ExchangeType.Direct);
-            //model.QueueDeclare(queueName, false, false, false, null);
-            //byte[] messageBodyBytes = System.Text.Encoding.UTF8.GetBytes("Hello, world!");
-            //model.BasicPublish(exchangeName, null, null, messageBodyBytes);
-            postData.Text = "It worked!";
+                channel.BasicPublish(exchange: "",
+                                        routingKey: "hello",
+                                        basicProperties: null,
+                                        body: body);
+                Console.WriteLine(" [x] Sent {0}", message);
+            }
+
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
         }
 
         //End of Working Code
