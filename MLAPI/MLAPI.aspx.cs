@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using RabbitMQ.Client;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,6 @@ using System.Web;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Windows;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -296,6 +297,38 @@ namespace HaloBI.Prism.Plugin
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
         }
 
+        protected void rabbitMessaging_click(object sender, EventArgs e)
+        {
+            //var factory = new ConnectionFactory() { HostName = "localhost" };
+            //using (var connection = factory.CreateConnection())
+            //using (var channel = connection.CreateModel())
+            //{
+            //    channel.ExchangeDeclare(exchange: "direct_logs",
+            //                            type: "direct");
+
+            //    var severity = (args.Length > 0) ? args[0] : "info";
+            //    var message = (args.Length > 1)
+            //                  ? string.Join(" ", args.Skip(1).ToArray())
+            //                  : "Hello World!";
+            //    var body = Encoding.UTF8.GetBytes(message);
+            //    channel.BasicPublish(exchange: "direct_logs",
+            //                         routingKey: severity,
+            //                         basicProperties: null,
+            //                         body: body);
+
+            String exchangeName = "machLearn";
+            //IModel model = null;
+            //var queueName = "firstMessages";
+            ////ConnectionFactory factory = new ConnectionFactory();
+            //var factory = new ConnectionFactory() { HostName = "localhost" };
+            //IConnection conn = factory.CreateConnection();
+            //IModel channel = conn.CreateModel();
+            //model.ExchangeDeclare(exchangeName, ExchangeType.Direct);
+            //model.QueueDeclare(queueName, false, false, false, null);
+            //byte[] messageBodyBytes = System.Text.Encoding.UTF8.GetBytes("Hello, world!");
+            //model.BasicPublish(exchangeName, null, null, messageBodyBytes);
+            postData.Text = "It worked!";
+        }
 
         //End of Working Code
 

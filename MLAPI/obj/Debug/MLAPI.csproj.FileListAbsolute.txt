@@ -58,3 +58,7 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.CodeDom.Providers.DotNe
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\MLAPI.csproj.CopyComplete
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\HaloBI.Prism.Plugin.MLAPI.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\HaloBI.Prism.Plugin.MLAPI.pdb
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.Diagnostics.Tracing.EventSource.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\RabbitMQ.Client.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.Diagnostics.Tracing.EventSource.xml
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\RabbitMQ.Client.xml

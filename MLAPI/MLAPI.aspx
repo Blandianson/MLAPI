@@ -10,7 +10,7 @@
 <body>
     <form id="form1" runat="server">
         <div id="wrapperForm">
-            <div class="header"><asp:Label runat="server" ID="apiUrlLabel" CssClass="fieldLabel">API URL:</asp:Label></div>
+            <div class="header"><asp:Label runat="server" ID="apiUrlLabel" CssClass="fieldLabel">Api Url:</asp:Label></div>
             <asp:TextBox id="ApiUrl" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine"/>
             <div class="header"><asp:Label runat="server" ID="dataLabel" CssClass="fieldLabel">Input Data:</asp:Label></div>
             <asp:TextBox id="data" runat="server" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine"/>
