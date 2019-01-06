@@ -62,3 +62,5 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.Diagnostics.Tracing.Eve
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\RabbitMQ.Client.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.Diagnostics.Tracing.EventSource.xml
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\RabbitMQ.Client.xml
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\WebDriver.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\WebDriver.xml

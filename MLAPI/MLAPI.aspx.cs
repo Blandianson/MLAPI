@@ -10,6 +10,8 @@ using System.Web;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Diagnostics;
+using System.Data.SqlClient;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -289,39 +291,125 @@ namespace HaloBI.Prism.Plugin
 
         //Working code
 
-        protected void submitApiData_Click(object sender, EventArgs e)
-        {
-            ApiUrl.Text = "Data has been retrieved";
-            data.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, ";
-            postData.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." +
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        protected void request_click(object sender, EventArgs e) {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                //conn.ConnectionString = "Server=DESKTOP-SK1K62B;Database=HaloMessageClient;Trusted_Connection=true";
+                conn.ConnectionString = "Server=DESKTOP-SK1K62B;Database=HaloMessageClient;Trusted_Connection=true";
+                conn.Open();
+                //SqlCommand command = new SqlCommand("SELECT TOP (1) FROM 'Queue.Message' ORDER BY DateCreated DESC", conn);
+                // SqlCommand command = new SqlCommand("SELECT * FROM Queue.Message", conn); WORKS!!
+                SqlCommand command = new SqlCommand("SELECT TOP 3 * FROM Queue.Message ORDER BY DateCreated DESC", conn);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        outputText.Text += String.Format("{0}", reader[8]);
+                    }
+                }
+
+                conn.Close();
+            }
         }
 
         protected void rabbitMessaging_click(object sender, EventArgs e)
         {
-        postData.Text = "It worked!";
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "hello",
-                                        durable: false,
-                                        exclusive: false,
-                                        autoDelete: false,
-                                        arguments: null);
 
-                string message = "Hello World!";
-                var body = Encoding.UTF8.GetBytes(message);
+            Process receiveProcess = receiveCmd();
+            Process receiveResponseProcess = receiveResponseCmd();
 
-                channel.BasicPublish(exchange: "",
-                                        routingKey: "hello",
-                                        basicProperties: null,
-                                        body: body);
-                Console.WriteLine(" [x] Sent {0}", message);
-            }
+            ProcessStartInfo cmdStartInfo = new ProcessStartInfo();
+            cmdStartInfo.FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe";
+            cmdStartInfo.RedirectStandardOutput = true;
+            cmdStartInfo.RedirectStandardError = true;
+            cmdStartInfo.RedirectStandardInput = true;
+            cmdStartInfo.UseShellExecute = false;
+            cmdStartInfo.CreateNoWindow = false;
+            cmdStartInfo.Verb = "runas";
+            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t  0 -l " + rScript.Text + " -p " + parameters.Text;
 
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
+
+            Process cmdProcess = new Process();
+            cmdProcess.StartInfo = cmdStartInfo;
+            cmdProcess.ErrorDataReceived += cmd_Error;
+            cmdProcess.OutputDataReceived += cmd_DataReceived;
+            cmdProcess.EnableRaisingEvents = true;
+            cmdProcess.Start();
+            cmdProcess.BeginOutputReadLine();
+            cmdProcess.BeginErrorReadLine();
+
+            cmdProcess.StandardInput.WriteLine("exit");                  //Execute exit. 
+            cmdProcess.WaitForExit();
+
+            
+            receiveProcess.Close();
+
+            receiveResponseProcess.Close();
+
+            return;
+        }
+
+        protected Process receiveCmd()
+        {
+            ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo();
+            cmdStartInfoRec.FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe";
+            cmdStartInfoRec.RedirectStandardOutput = true;
+            cmdStartInfoRec.RedirectStandardError = true;
+            cmdStartInfoRec.RedirectStandardInput = true;
+            cmdStartInfoRec.UseShellExecute = false;
+            cmdStartInfoRec.CreateNoWindow = false;
+            cmdStartInfoRec.Verb = "runas";
+            cmdStartInfoRec.Arguments = "receive";
+
+            Process cmdProcessRec = new Process();
+            cmdProcessRec.StartInfo = cmdStartInfoRec;
+            cmdProcessRec.ErrorDataReceived += cmd_Error;
+            cmdProcessRec.OutputDataReceived += cmd_DataReceived;
+            cmdProcessRec.EnableRaisingEvents = true;
+            cmdProcessRec.Start();
+            cmdProcessRec.BeginOutputReadLine();
+            cmdProcessRec.BeginErrorReadLine();
+            
+            cmdProcessRec.StandardInput.Flush();
+
+            return cmdProcessRec;
+        }
+
+        protected Process receiveResponseCmd()
+        {
+            ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo();
+            cmdStartInfoRecResp.FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe";
+            cmdStartInfoRecResp.RedirectStandardOutput = true;
+            cmdStartInfoRecResp.RedirectStandardError = true;
+            cmdStartInfoRecResp.RedirectStandardInput = true;
+            cmdStartInfoRecResp.UseShellExecute = false;
+            cmdStartInfoRecResp.CreateNoWindow = false;
+            cmdStartInfoRecResp.Verb = "runas";
+            cmdStartInfoRecResp.Arguments = "receiveresponse";
+            
+            Process cmdProcessResp = new Process();
+            cmdProcessResp.StartInfo = cmdStartInfoRecResp;
+            cmdProcessResp.ErrorDataReceived += cmd_Error;
+            cmdProcessResp.OutputDataReceived += cmd_DataReceived;
+            cmdProcessResp.EnableRaisingEvents = true;
+            cmdProcessResp.Start();
+            cmdProcessResp.BeginOutputReadLine();
+            cmdProcessResp.BeginErrorReadLine();
+            
+            cmdProcessResp.StandardInput.Flush();
+
+            return cmdProcessResp;
+        }
+
+        protected void cmd_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+            postData.Text += "Data: " + (e.Data) + "\n\n";
+        }
+
+        protected void cmd_Error(object sender, DataReceivedEventArgs e)
+        {
+            postData.Text += "Error: " + (e.Data) + "\n\n";
         }
 
         //End of Working Code

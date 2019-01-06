@@ -10,15 +10,30 @@
 <body>
     <form id="form1" runat="server">
         <div id="wrapperForm">
-            <div class="header"><asp:Label runat="server" ID="apiUrlLabel" CssClass="fieldLabel">Api Url:</asp:Label></div>
-            <asp:TextBox id="ApiUrl" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine"/>
-            <div class="header"><asp:Label runat="server" ID="dataLabel" CssClass="fieldLabel">Input Data:</asp:Label></div>
-            <asp:TextBox id="data" runat="server" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine"/>
-            <asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="submitApiData_Click"/>
+
+            <div class="header"><asp:Label runat="server" ID="sessionLabel" CssClass="fieldLabel">Session ID:</asp:Label></div>
+            <asp:TextBox id="sessionID" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6"/>
+            <div class="header"><asp:Label runat="server" ID="executionLabel" CssClass="fieldLabel">Execution ID:</asp:Label></div>
+            <asp:TextBox id="executionID" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="100"/>
+            <div class="header"><asp:Label runat="server" ID="sqlServerLabel" CssClass="fieldLabel">SQL Server:</asp:Label></div>
+            <asp:TextBox id="server" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="localhost"/>
+            <div class="header"><asp:Label runat="server" ID="stagingDBLabel" CssClass="fieldLabel">Staging Database Name:</asp:Label></div>
+            <asp:TextBox id="staging" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="xxx"/>
+            <div class="header"><asp:Label runat="server" ID="rScriptLabel" CssClass="fieldLabel">R Script:</asp:Label></div>
+            <asp:TextBox id="rScript" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="C:\\Users\\Nicole.jackson\\Documents\\Halo.Development\\R_Scripts_MLW\\test_add.r"/>
+            <div class="header"><asp:Label runat="server" ID="paramLabel" CssClass="fieldLabel">Parameters (Comma Separated, no spaces):</asp:Label></div>
+            <asp:TextBox id="parameters" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="1,1"/>
+
+            <asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="rabbitMessaging_click"/>
             <div id="resultBox">
                 <div class="header"><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Results:</asp:Label></div>
-                <asp:Button ID="copyAll" runat="server" text="Copy All" AutoPostBack="True" onclick="rabbitMessaging_click"/>
                 <asp:textbox id="postData" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
+            </div>
+
+            <asp:Button ID="outputButton" runat="server" text="Return Forcast" AutoPostBack="True" onclick="request_click"/>
+            <div id="outputDiv">
+                <div class="header"><asp:Label runat="server" ID="outputLabel" CssClass="fieldLabel">Output:</asp:Label></div>
+                <asp:textbox id="outputText" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
             </div>
         </div>
 

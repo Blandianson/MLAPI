@@ -22,40 +22,112 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// apiUrlLabel control.
+        /// sessionLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label apiUrlLabel;
+        protected global::System.Web.UI.WebControls.Label sessionLabel;
         
         /// <summary>
-        /// ApiUrl control.
+        /// sessionID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ApiUrl;
+        protected global::System.Web.UI.WebControls.TextBox sessionID;
         
         /// <summary>
-        /// dataLabel control.
+        /// executionLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label dataLabel;
+        protected global::System.Web.UI.WebControls.Label executionLabel;
         
         /// <summary>
-        /// data control.
+        /// executionID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox data;
+        protected global::System.Web.UI.WebControls.TextBox executionID;
+        
+        /// <summary>
+        /// sqlServerLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label sqlServerLabel;
+        
+        /// <summary>
+        /// server control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox server;
+        
+        /// <summary>
+        /// stagingDBLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label stagingDBLabel;
+        
+        /// <summary>
+        /// staging control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox staging;
+        
+        /// <summary>
+        /// rScriptLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label rScriptLabel;
+        
+        /// <summary>
+        /// rScript control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox rScript;
+        
+        /// <summary>
+        /// paramLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label paramLabel;
+        
+        /// <summary>
+        /// parameters control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox parameters;
         
         /// <summary>
         /// call control.
@@ -76,15 +148,6 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.Label resultLabel;
         
         /// <summary>
-        /// copyAll control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button copyAll;
-        
-        /// <summary>
         /// postData control.
         /// </summary>
         /// <remarks>
@@ -92,6 +155,33 @@ namespace HaloBI.Prism.Plugin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox postData;
+        
+        /// <summary>
+        /// outputButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button outputButton;
+        
+        /// <summary>
+        /// outputLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label outputLabel;
+        
+        /// <summary>
+        /// outputText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox outputText;
         
         /// <summary>
         /// uiSelectedMembers control.
