@@ -105,7 +105,7 @@ namespace HaloBI.Prism.Plugin
             uiSelectedMembers.Text = string.Join(",", members.ToArray());
 
 			// set members list dropdown
-			SetMembersList(context, uiMembersList);
+			//SetMembersList(context, uiMembersList);
 			if (members.Count > 0)
 			{
 				var item = uiMembersList.Items.FindByText(members[0].ToString());
@@ -141,52 +141,52 @@ namespace HaloBI.Prism.Plugin
             //SetDebugInfo(context);
         }
 
-        private void SetMembersList(JObject context, DropDownList ddl)
-        {
-			var server = context["cube"]["server"].ToString();
-			var catalog = context["cube"]["catalog"].ToString();
-			var cube = context["cube"]["cube"].ToString();
+   //     private void SetMembersList(JObject context, DropDownList ddl)
+   //     {
+			//var server = context["cube"]["server"].ToString();
+			//var catalog = context["cube"]["catalog"].ToString();
+			//var cube = context["cube"]["cube"].ToString();
 
-			// get hierarchy details from config
-			var h = context["plugin"]["config"]["hierarchy"];
-			var hierarchy = h["name"].ToString();
-			var level = h["level"].ToString();
-			var allMember = h["allMember"].ToString();
+			//// get hierarchy details from config
+			//var h = context["plugin"]["config"]["hierarchy"];
+			//var hierarchy = h["name"].ToString();
+			//var level = h["level"].ToString();
+			//var allMember = h["allMember"].ToString();
  
-			// Build the MDX
-			var mdx = "WITH "; 
-			mdx += String.Format("MEMBER [Time].[Time].[MemberUniqueName] AS '{0}.CurrentMember.UniqueName' ", 
-				hierarchy
-			);
-			mdx += String.Format("MEMBER [Time].[Time].[MemberName] AS '{0}.CurrentMember.Name' ",
-				hierarchy
-			);
-			mdx += String.Format("SET [Rows] AS '{{Descendants({0}, {1})}}' ",
-				allMember,
-				level
-			);
-			mdx += "SELECT{[Time].[Time].[MemberUniqueName], [Time].[Time].[MemberName]} ON COLUMNS, ";
-			mdx += "{[Rows]} ON ROWS ";
-			mdx += String.Format("FROM [{0}]", 
-				cube
-			);
+			//// Build the MDX
+			//var mdx = "WITH "; 
+			//mdx += String.Format("MEMBER [Time].[Time].[MemberUniqueName] AS '{0}.CurrentMember.UniqueName' ", 
+			//	hierarchy
+			//);
+			//mdx += String.Format("MEMBER [Time].[Time].[MemberName] AS '{0}.CurrentMember.Name' ",
+			//	hierarchy
+			//);
+			//mdx += String.Format("SET [Rows] AS '{{Descendants({0}, {1})}}' ",
+			//	allMember,
+			//	level
+			//);
+			//mdx += "SELECT{[Time].[Time].[MemberUniqueName], [Time].[Time].[MemberName]} ON COLUMNS, ";
+			//mdx += "{[Rows]} ON ROWS ";
+			//mdx += String.Format("FROM [{0}]", 
+			//	cube
+			//);
 
-			var data = new CubeData(server, catalog, cube);
-			var dataSet = data.GetData(mdx);
+			//var data = new CubeData(server, catalog, cube);
+			//var dataSet = data.GetData(mdx);
 
-			// expecting only a single dataTable in the set
-			var dataTable = dataSet.Tables[0];
+			//// expecting only a single dataTable in the set
+			//var dataTable = dataSet.Tables[0];
 
-            ddl.Items.Clear();
+   //         ddl.Items.Clear();
 
-			foreach (DataRow r in dataTable.Rows)
-			{
-				ddl.Items.Add(new ListItem(
-					r["[Time].[Time].[MemberName]"].ToString(),
-					r["[Time].[Time].[MemberUniqueName]"].ToString()
-				));
-			}
-        }
+			//foreach (DataRow r in dataTable.Rows)
+			//{
+			//	ddl.Items.Add(new ListItem(
+			//		r["[Time].[Time].[MemberName]"].ToString(),
+			//		r["[Time].[Time].[MemberUniqueName]"].ToString()
+			//	));
+			//}
+   //     }
 
         //private void SetDebugInfo(JObject context)
         //{
@@ -291,24 +291,23 @@ namespace HaloBI.Prism.Plugin
 
         //Working code
 
-        protected void request_click(object sender, EventArgs e) {
+        protected void request_click(object sender, EventArgs e)
+        {
+            outputText.Text = "";
             using (SqlConnection conn = new SqlConnection())
             {
-                //conn.ConnectionString = "Server=DESKTOP-SK1K62B;Database=HaloMessageClient;Trusted_Connection=true";
-                conn.ConnectionString = "Server=DESKTOP-SK1K62B;Database=HaloMessageClient;Trusted_Connection=true";
+                String localhostName = System.Environment.MachineName;
+                conn.ConnectionString = "Server=" + localhostName + "; Database=HaloMessageClient;Trusted_Connection=true";
                 conn.Open();
-                //SqlCommand command = new SqlCommand("SELECT TOP (1) FROM 'Queue.Message' ORDER BY DateCreated DESC", conn);
-                // SqlCommand command = new SqlCommand("SELECT * FROM Queue.Message", conn); WORKS!!
                 SqlCommand command = new SqlCommand("SELECT TOP 3 * FROM Queue.Message ORDER BY DateCreated DESC", conn);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        outputText.Text += String.Format("{0}", reader[8]);
+                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]);
                     }
                 }
-
                 conn.Close();
             }
         }
@@ -327,7 +326,7 @@ namespace HaloBI.Prism.Plugin
             cmdStartInfo.UseShellExecute = false;
             cmdStartInfo.CreateNoWindow = false;
             cmdStartInfo.Verb = "runas";
-            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t  0 -l " + rScript.Text + " -p " + parameters.Text;
+            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + parameters.Text;
 
 
             Process cmdProcess = new Process();

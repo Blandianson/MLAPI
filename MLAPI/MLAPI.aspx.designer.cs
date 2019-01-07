@@ -94,6 +94,24 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.TextBox staging;
         
         /// <summary>
+        /// fileTypeLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label fileTypeLabel;
+        
+        /// <summary>
+        /// fileType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList fileType;
+        
+        /// <summary>
         /// rScriptLabel control.
         /// </summary>
         /// <remarks>
@@ -166,13 +184,13 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.Button outputButton;
         
         /// <summary>
-        /// outputLabel control.
+        /// outputResultLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label outputLabel;
+        protected global::System.Web.UI.WebControls.Label outputResultLabel;
         
         /// <summary>
         /// outputText control.

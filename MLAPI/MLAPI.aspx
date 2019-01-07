@@ -19,20 +19,25 @@
             <asp:TextBox id="server" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="localhost"/>
             <div class="header"><asp:Label runat="server" ID="stagingDBLabel" CssClass="fieldLabel">Staging Database Name:</asp:Label></div>
             <asp:TextBox id="staging" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="xxx"/>
-            <div class="header"><asp:Label runat="server" ID="rScriptLabel" CssClass="fieldLabel">R Script:</asp:Label></div>
+            <div class="header"><asp:Label runat="server" ID="fileTypeLabel" CssClass="fieldLabel">Script File Type:</asp:Label></div>
+            <div class="header"><asp:RadioButtonList ID="fileType" runat="server" onSelectedIndexChange="fileTypeChange" AutoPostBack="true" CssClass="fieldLabel">
+                <asp:ListItem Selected="true" Value="0"> R Script</asp:ListItem>
+                <asp:ListItem Value="1"> Python</asp:ListItem>
+            </asp:RadioButtonList></div>
+            <div class="header"><asp:Label runat="server" ID="rScriptLabel" CssClass="fieldLabel">Script URI:</asp:Label></div>
             <asp:TextBox id="rScript" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="C:\\Users\\Nicole.jackson\\Documents\\Halo.Development\\R_Scripts_MLW\\test_add.r"/>
             <div class="header"><asp:Label runat="server" ID="paramLabel" CssClass="fieldLabel">Parameters (Comma Separated, no spaces):</asp:Label></div>
             <asp:TextBox id="parameters" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="1,1"/>
 
             <asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="rabbitMessaging_click"/>
-            <div id="resultBox">
-                <div class="header"><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Results:</asp:Label></div>
+            <div class="resultBox">
+                <div class="header"><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Input Results:</asp:Label></div>
                 <asp:textbox id="postData" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
             </div>
 
             <asp:Button ID="outputButton" runat="server" text="Return Forcast" AutoPostBack="True" onclick="request_click"/>
-            <div id="outputDiv">
-                <div class="header"><asp:Label runat="server" ID="outputLabel" CssClass="fieldLabel">Output:</asp:Label></div>
+            <div class="resultBox">
+                <div class="header"><asp:Label runat="server" ID="outputResultLabel" CssClass="fieldLabel">Output Results:</asp:Label></div>
                 <asp:textbox id="outputText" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
             </div>
         </div>
