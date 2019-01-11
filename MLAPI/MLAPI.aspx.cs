@@ -12,6 +12,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Diagnostics;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -291,6 +292,17 @@ namespace HaloBI.Prism.Plugin
 
         //Working code
 
+        protected String transformParams(String param)
+        {
+            param = param.Replace(",", ";");
+            return param = param.Replace("\"", "");
+        }
+
+        protected String transformData(String date)
+        {
+            return date.Substring(0,7);
+        }
+
         protected void request_click(object sender, EventArgs e)
         {
             outputText.Text = "";
@@ -299,13 +311,13 @@ namespace HaloBI.Prism.Plugin
                 String localhostName = System.Environment.MachineName;
                 conn.ConnectionString = "Server=" + localhostName + "; Database=HaloMessageClient;Trusted_Connection=true";
                 conn.Open();
-                SqlCommand command = new SqlCommand("SELECT TOP 3 * FROM Queue.Message ORDER BY DateCreated DESC", conn);
+                SqlCommand command = new SqlCommand("SELECT TOP 1 * FROM Queue.Message ORDER BY DateCreated DESC", conn);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]);
+                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}{2}\n", reader[5], reader[8], reader[4]); //Will be altering this to output the Hicharts stuff
                     }
                 }
                 conn.Close();
@@ -326,7 +338,12 @@ namespace HaloBI.Prism.Plugin
             cmdStartInfo.UseShellExecute = false;
             cmdStartInfo.CreateNoWindow = false;
             cmdStartInfo.Verb = "runas";
-            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + parameters.Text;
+            //String date = transformDate(start.SelectedDate.ToString());
+            String param = transformParams(parameters.Text);
+            String startDate = transformData(start.Text.ToString());
+            String endDate = transformData(end.Text.ToString());
+            //cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + date + "," + parameters.Text;
+            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + param;
 
 
             Process cmdProcess = new Process();
