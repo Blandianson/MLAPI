@@ -1,18 +1,18 @@
-﻿using Newtonsoft.Json;
-using RabbitMQ.Client;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Web;
-using System.Web.Services;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Diagnostics;
+using System.Web.Services;
 using System.Data.SqlClient;
-using System.Text.RegularExpressions;
+using System.Linq;
+using System.Drawing;
+using Newtonsoft.Json;
+using Highsoft.Web.Mvc;
+using Newtonsoft.Json.Linq;
+using Highsoft.Web.Mvc.Charts;
+using System.Collections.Generic;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -266,7 +266,7 @@ namespace HaloBI.Prism.Plugin
             HttpContext.Current.Session[sessionId] = JsonConvert.SerializeObject(context);
         }
 
-        protected void uiMembersList_SelectedIndexChanged(object sender, EventArgs e)
+        protected void UIMembersList_SelectedIndexChanged(object sender, EventArgs e)
         {
             var memberUniqueName = uiMembersList.SelectedItem.Value;
             var memberName = uiMembersList.SelectedItem.Text;
@@ -292,18 +292,18 @@ namespace HaloBI.Prism.Plugin
 
         //Working code
 
-        protected String transformParams(String param)
+        protected String TransformParams(String param)
         {
             param = param.Replace(",", ";");
             return param = param.Replace("\"", "");
         }
 
-        protected String transformData(String date)
+        protected String TransformData(String date)
         {
             return date.Substring(0,7);
         }
 
-        protected void request_click(object sender, EventArgs e)
+        protected void Request_click(object sender, EventArgs e)
         {
             outputText.Text = "";
             using (SqlConnection conn = new SqlConnection())
@@ -317,39 +317,41 @@ namespace HaloBI.Prism.Plugin
                 {
                     while (reader.Read())
                     {
-                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}{2}\n", reader[5], reader[8], reader[4]); //Will be altering this to output the Hicharts stuff
+                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]); 
                     }
                 }
                 conn.Close();
             }
         }
 
-        protected void rabbitMessaging_click(object sender, EventArgs e)
+        protected void RabbitMessaging_click(object sender, EventArgs e)
         {
 
-            Process receiveProcess = receiveCmd();
-            Process receiveResponseProcess = receiveResponseCmd();
+            Process receiveProcess = ReceiveCmd();
+            Process receiveResponseProcess = ReceiveResponseCmd();
 
-            ProcessStartInfo cmdStartInfo = new ProcessStartInfo();
-            cmdStartInfo.FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe";
-            cmdStartInfo.RedirectStandardOutput = true;
-            cmdStartInfo.RedirectStandardError = true;
-            cmdStartInfo.RedirectStandardInput = true;
-            cmdStartInfo.UseShellExecute = false;
-            cmdStartInfo.CreateNoWindow = false;
-            cmdStartInfo.Verb = "runas";
-            //String date = transformDate(start.SelectedDate.ToString());
-            String param = transformParams(parameters.Text);
-            String startDate = transformData(start.Text.ToString());
-            String endDate = transformData(end.Text.ToString());
-            //cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + date + "," + parameters.Text;
-            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + param;
+            ProcessStartInfo cmdStartInfo = new ProcessStartInfo
+            {
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas"
+            };
+            String param = TransformParams(parameters.Text);
+            String startDate = TransformData(start.Text.ToString());
+            String endDate = TransformData(end.Text.ToString());
+            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
 
 
-            Process cmdProcess = new Process();
-            cmdProcess.StartInfo = cmdStartInfo;
-            cmdProcess.ErrorDataReceived += cmd_Error;
-            cmdProcess.OutputDataReceived += cmd_DataReceived;
+            Process cmdProcess = new Process
+            {
+                StartInfo = cmdStartInfo
+            };
+            cmdProcess.ErrorDataReceived += Cmd_Error;
+            cmdProcess.OutputDataReceived += Cmd_DataReceived;
             cmdProcess.EnableRaisingEvents = true;
             cmdProcess.Start();
             cmdProcess.BeginOutputReadLine();
@@ -366,22 +368,26 @@ namespace HaloBI.Prism.Plugin
             return;
         }
 
-        protected Process receiveCmd()
+        protected Process ReceiveCmd()
         {
-            ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo();
-            cmdStartInfoRec.FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe";
-            cmdStartInfoRec.RedirectStandardOutput = true;
-            cmdStartInfoRec.RedirectStandardError = true;
-            cmdStartInfoRec.RedirectStandardInput = true;
-            cmdStartInfoRec.UseShellExecute = false;
-            cmdStartInfoRec.CreateNoWindow = false;
-            cmdStartInfoRec.Verb = "runas";
-            cmdStartInfoRec.Arguments = "receive";
+            ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo
+            {
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas",
+                Arguments = "receive"
+            };
 
-            Process cmdProcessRec = new Process();
-            cmdProcessRec.StartInfo = cmdStartInfoRec;
-            cmdProcessRec.ErrorDataReceived += cmd_Error;
-            cmdProcessRec.OutputDataReceived += cmd_DataReceived;
+            Process cmdProcessRec = new Process
+            {
+                StartInfo = cmdStartInfoRec
+            };
+            cmdProcessRec.ErrorDataReceived += Cmd_Error;
+            cmdProcessRec.OutputDataReceived += Cmd_DataReceived;
             cmdProcessRec.EnableRaisingEvents = true;
             cmdProcessRec.Start();
             cmdProcessRec.BeginOutputReadLine();
@@ -392,22 +398,26 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessRec;
         }
 
-        protected Process receiveResponseCmd()
+        protected Process ReceiveResponseCmd()
         {
-            ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo();
-            cmdStartInfoRecResp.FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe";
-            cmdStartInfoRecResp.RedirectStandardOutput = true;
-            cmdStartInfoRecResp.RedirectStandardError = true;
-            cmdStartInfoRecResp.RedirectStandardInput = true;
-            cmdStartInfoRecResp.UseShellExecute = false;
-            cmdStartInfoRecResp.CreateNoWindow = false;
-            cmdStartInfoRecResp.Verb = "runas";
-            cmdStartInfoRecResp.Arguments = "receiveresponse";
-            
-            Process cmdProcessResp = new Process();
-            cmdProcessResp.StartInfo = cmdStartInfoRecResp;
-            cmdProcessResp.ErrorDataReceived += cmd_Error;
-            cmdProcessResp.OutputDataReceived += cmd_DataReceived;
+            ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo
+            {
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas",
+                Arguments = "receiveresponse"
+            };
+
+            Process cmdProcessResp = new Process
+            {
+                StartInfo = cmdStartInfoRecResp
+            };
+            cmdProcessResp.ErrorDataReceived += Cmd_Error;
+            cmdProcessResp.OutputDataReceived += Cmd_DataReceived;
             cmdProcessResp.EnableRaisingEvents = true;
             cmdProcessResp.Start();
             cmdProcessResp.BeginOutputReadLine();
@@ -418,12 +428,12 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessResp;
         }
 
-        protected void cmd_DataReceived(object sender, DataReceivedEventArgs e)
+        protected void Cmd_DataReceived(object sender, DataReceivedEventArgs e)
         {
             postData.Text += "Data: " + (e.Data) + "\n\n";
         }
 
-        protected void cmd_Error(object sender, DataReceivedEventArgs e)
+        protected void Cmd_Error(object sender, DataReceivedEventArgs e)
         {
             postData.Text += "Error: " + (e.Data) + "\n\n";
         }

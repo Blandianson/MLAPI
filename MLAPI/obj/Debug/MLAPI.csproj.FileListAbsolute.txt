@@ -64,3 +64,5 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\MLAPI.csproj.CopyComplete
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\HaloBI.Prism.Plugin.MLAPI.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\HaloBI.Prism.Plugin.MLAPI.pdb
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\MLAPI.csprojAssemblyReference.cache
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Highcharts.Web.Mvc.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Highcharts.Web.Mvc.xml

@@ -202,6 +202,24 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.TextBox column;
         
         /// <summary>
+        /// forecastRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label forecastRange;
+        
+        /// <summary>
+        /// forecast control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox forecast;
+        
+        /// <summary>
         /// call control.
         /// </summary>
         /// <remarks>
