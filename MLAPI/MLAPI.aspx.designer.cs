@@ -22,42 +22,6 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// sessionLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label sessionLabel;
-        
-        /// <summary>
-        /// sessionID control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox sessionID;
-        
-        /// <summary>
-        /// executionLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label executionLabel;
-        
-        /// <summary>
-        /// executionID control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox executionID;
-        
-        /// <summary>
         /// sqlServerLabel control.
         /// </summary>
         /// <remarks>
@@ -94,24 +58,6 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.TextBox staging;
         
         /// <summary>
-        /// fileTypeLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label fileTypeLabel;
-        
-        /// <summary>
-        /// fileType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList fileType;
-        
-        /// <summary>
         /// rScriptLabel control.
         /// </summary>
         /// <remarks>
@@ -130,22 +76,22 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.TextBox rScript;
         
         /// <summary>
-        /// paramLabel control.
+        /// fileTypeLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label paramLabel;
+        protected global::System.Web.UI.WebControls.Label fileTypeLabel;
         
         /// <summary>
-        /// parameters control.
+        /// fileType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox parameters;
+        protected global::System.Web.UI.WebControls.RadioButtonList fileType;
         
         /// <summary>
         /// startDate control.
@@ -220,40 +166,22 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.TextBox forecast;
         
         /// <summary>
-        /// call control.
+        /// paramLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button call;
+        protected global::System.Web.UI.WebControls.Label paramLabel;
         
         /// <summary>
-        /// resultLabel control.
+        /// parameters control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label resultLabel;
-        
-        /// <summary>
-        /// postData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox postData;
-        
-        /// <summary>
-        /// outputButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button outputButton;
+        protected global::System.Web.UI.WebControls.TextBox parameters;
         
         /// <summary>
         /// outputResultLabel control.
@@ -272,6 +200,15 @@ namespace HaloBI.Prism.Plugin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox outputText;
+        
+        /// <summary>
+        /// outputButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button outputButton;
         
         /// <summary>
         /// uiSelectedMembers control.

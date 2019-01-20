@@ -6,12 +6,9 @@ using System.Web.UI;
 using System.Diagnostics;
 using System.Web.Services;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Drawing;
 using Newtonsoft.Json;
-using Highsoft.Web.Mvc;
+using System.Threading;
 using Newtonsoft.Json.Linq;
-using Highsoft.Web.Mvc.Charts;
 using System.Collections.Generic;
 
 namespace HaloBI.Prism.Plugin
@@ -305,26 +302,58 @@ namespace HaloBI.Prism.Plugin
 
         protected void Request_click(object sender, EventArgs e)
         {
+            RabbitMessaging_click();
             outputText.Text = "";
+
+            var newThread = new Thread(threadWait);
+            newThread.Start();
+            newThread.Join();
+        }
+
+        protected void threadWait()
+        {
+            String screenOutput = "";
+            String entity = "";
+            String refresh = DBWait(screenOutput, entity);
+
+            while (refresh == null)
+            {
+                Thread.Sleep(3000);
+                refresh = DBWait(screenOutput, entity);
+            }
+
+            return;
+        }
+
+        protected String DBWait(String output, String entity)
+        {
             using (SqlConnection conn = new SqlConnection())
             {
                 String localhostName = System.Environment.MachineName;
                 conn.ConnectionString = "Server=" + localhostName + "; Database=HaloMessageClient;Trusted_Connection=true";
                 conn.Open();
                 SqlCommand command = new SqlCommand("SELECT TOP 1 * FROM Queue.Message ORDER BY DateCreated DESC", conn);
+                
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]); 
+                        //if (reader[5] == null)
+                        //{
+                        //    newThread.sleep();
+                        //}
+                        entity = String.Format("{0}", reader[4]);
+                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]);
+                     
                     }
                 }
                 conn.Close();
             }
+            return entity;
         }
 
-        protected void RabbitMessaging_click(object sender, EventArgs e)
+        protected void RabbitMessaging_click() //Removed  object sender, EventArgs e   as not triggered from MLAPI.html
         {
 
             Process receiveProcess = ReceiveCmd();
@@ -340,18 +369,20 @@ namespace HaloBI.Prism.Plugin
                 CreateNoWindow = false,
                 Verb = "runas"
             };
+            String sessionID = "38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6";
+            String executionID = "100";
             String param = TransformParams(parameters.Text);
             String startDate = TransformData(start.Text.ToString());
             String endDate = TransformData(end.Text.ToString());
-            cmdStartInfo.Arguments = "send -s " + sessionID.Text + " -f " + executionID.Text + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
+            cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
 
 
             Process cmdProcess = new Process
             {
                 StartInfo = cmdStartInfo
             };
-            cmdProcess.ErrorDataReceived += Cmd_Error;
-            cmdProcess.OutputDataReceived += Cmd_DataReceived;
+            //cmdProcess.ErrorDataReceived += Cmd_Error;                        //Removed because output is not needed for UI
+            //cmdProcess.OutputDataReceived += Cmd_DataReceived;
             cmdProcess.EnableRaisingEvents = true;
             cmdProcess.Start();
             cmdProcess.BeginOutputReadLine();
@@ -386,8 +417,8 @@ namespace HaloBI.Prism.Plugin
             {
                 StartInfo = cmdStartInfoRec
             };
-            cmdProcessRec.ErrorDataReceived += Cmd_Error;
-            cmdProcessRec.OutputDataReceived += Cmd_DataReceived;
+            //cmdProcessRec.ErrorDataReceived += Cmd_Error;                        //Removed because output is not needed for UI
+            //cmdProcessRec.OutputDataReceived += Cmd_DataReceived;
             cmdProcessRec.EnableRaisingEvents = true;
             cmdProcessRec.Start();
             cmdProcessRec.BeginOutputReadLine();
@@ -416,8 +447,8 @@ namespace HaloBI.Prism.Plugin
             {
                 StartInfo = cmdStartInfoRecResp
             };
-            cmdProcessResp.ErrorDataReceived += Cmd_Error;
-            cmdProcessResp.OutputDataReceived += Cmd_DataReceived;
+            //cmdProcessResp.ErrorDataReceived += Cmd_Error;                        //Removed because output is not needed for UI
+            //cmdProcessResp.OutputDataReceived += Cmd_DataReceived;
             cmdProcessResp.EnableRaisingEvents = true;
             cmdProcessResp.Start();
             cmdProcessResp.BeginOutputReadLine();
@@ -428,15 +459,15 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessResp;
         }
 
-        protected void Cmd_DataReceived(object sender, DataReceivedEventArgs e)
-        {
-            postData.Text += "Data: " + (e.Data) + "\n\n";
-        }
+        //protected void Cmd_DataReceived(object sender, DataReceivedEventArgs e) //Removed because output is not needed for UI
+        //{
+        //    postData.Text += "Data: " + (e.Data) + "\n\n";
+        //}
 
-        protected void Cmd_Error(object sender, DataReceivedEventArgs e)
-        {
-            postData.Text += "Error: " + (e.Data) + "\n\n";
-        }
+        //protected void Cmd_Error(object sender, DataReceivedEventArgs e)
+        //{
+        //    postData.Text += "Error: " + (e.Data) + "\n\n";
+        //}
 
         //End of Working Code
 
