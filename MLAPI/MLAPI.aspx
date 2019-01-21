@@ -25,22 +25,22 @@
             <div class="row">  <%--Server & Staging--%>
                 <div class="col-sm-6"><asp:Label runat="server" ID="sqlServerLabel" CssClass="fieldLabel">SQL Server *</asp:Label>
                 <br />
-                <asp:TextBox id="server" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="localhost"/></div>
+                <asp:TextBox id="server" runat="server" AutoPostBack="False" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="localhost"/></div>
 
                 <div class="col-sm-6"><asp:Label runat="server" ID="stagingDBLabel" CssClass="fieldLabel" value="No name specified">Staging Database Name</asp:Label>
                     <br />
-                <asp:TextBox id="staging" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="Optional"/></div>
+                <asp:TextBox id="staging" runat="server" AutoPostBack="False" Wrap="false" cssClass="inputTBoxes" TextMode="MultiLine" Text="Optional"/></div>
             </div>
 
 
             <div class="row">  <%--File Name & Type--%>
                 <div class="col-sm-8"><asp:Label runat="server" ID="rScriptLabel" CssClass="fieldLabel">Script URI *</asp:Label>
                     <br />
-                <asp:TextBox id="rScript" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes field-long" TextMode="MultiLine" Text="C:\\Users\\Nicole.jackson\\Documents\\Halo.Development\\R_Scripts_MLW\\testTimeSeries.r"/></div>
+                <asp:TextBox id="rScript" runat="server" AutoPostBack="False" Wrap="false" cssClass="inputTBoxes field-long" TextMode="MultiLine" Text="C:\\Users\\Nicole.jackson\\Documents\\Halo.Development\\R_Scripts_MLW\\testTimeSeries.r"/></div>
             
                 <div class="col-sm-4"><asp:Label runat="server" ID="fileTypeLabel" CssClass="fieldLabel">Script File Type *</asp:Label>
                     <br />
-                <div class="header"><asp:RadioButtonList ID="fileType" runat="server" onSelectedIndexChange="fileTypeChange" AutoPostBack="true" CssClass="fieldLabel">
+                <div class="header"><asp:RadioButtonList ID="fileType" runat="server" onSelectedIndexChange="fileTypeChange" AutoPostBack="False" CssClass="fieldLabel">
                     <asp:ListItem Selected="true" Value="0"> R Script</asp:ListItem>
                     <asp:ListItem Value="1"> Python</asp:ListItem>
                 </asp:RadioButtonList></div></div>
@@ -73,7 +73,7 @@
                 <div class="col-sm-3">
                     <asp:Label runat="server" ID="paramLabel" CssClass="fieldLabel">Time Series Data *</asp:Label>
                     <br />
-                    <asp:TextBox id="parameters" runat="server" AutoPostBack="True" Wrap="false" cssClass="inputTBoxes field-long" TextMode="MultiLine" Text="1,1" />
+                    <asp:TextBox id="parameters" runat="server" AutoPostBack="False" Wrap="false" cssClass="inputTBoxes field-long" TextMode="MultiLine" Text="1,1" />
                 </div>
                 
                 <div class="col-sm-9">
@@ -84,13 +84,8 @@
             </div>
 
             <div class="row">
-                <%--<div class="col-sm-3"><asp:Button ID="call" runat="server" text="Request Forcast" AutoPostBack="True" onclick="RabbitMessaging_click"/></div>--%>
                 <div class="col-sm-12"><asp:Button ID="outputButton" runat="server" text="Return Forcast" AutoPostBack="True" onclick="Request_click"/></div>
             </div>
-            <%--<div class="resultBox">
-                <div class="header"><asp:Label runat="server" ID="resultLabel" CssClass="fieldLabel">Input Results:</asp:Label></div>
-                <asp:textbox id="postData" runat="server" CssClass="textIObox" TextMode="MultiLine"/>
-            </div>--%>
 
             <div id="container" style="width:100%; height:400px;"></div>
 

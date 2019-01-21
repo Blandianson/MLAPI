@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Security;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -289,121 +290,126 @@ namespace HaloBI.Prism.Plugin
 
         //Working code
 
-        protected String TransformParams(String param)
+        protected String TransformParams(String param)                  //Cleans the TS of quotes and makes it csv To do(Subject to Change with input)
         {
             param = param.Replace(",", ";");
             return param = param.Replace("\"", "");
         }
 
-        protected String TransformData(String date)
+        protected String TransformData(String date)                     //Extracts the date from TS data To do(Subject to Change with input)
         {
             return date.Substring(0,7);
         }
 
-        protected void Request_click(object sender, EventArgs e)
+        protected void Request_click(object sender, EventArgs e)        //Triggers Forecasting R script and returns TS forecast in text form
         {
-            RabbitMessaging_click();
-            outputText.Text = "";
+            RabbitMessaging_click();                                    //Function controlling cmd input to Rscript and output from SQL Server
 
-            var newThread = new Thread(threadWait);
-            newThread.Start();
-            newThread.Join();
-        }
+            var endTime = DateTime.Now.AddSeconds(120);                 //Database checking timeout
 
-        protected void threadWait()
-        {
-            String screenOutput = "";
-            String entity = "";
-            String refresh = DBWait(screenOutput, entity);
-
-            while (refresh == null)
+            while (DateTime.Now.CompareTo(endTime) < 0)
             {
-                Thread.Sleep(3000);
-                refresh = DBWait(screenOutput, entity);
-            }
+                object result = "";
+                object status = DBWait(result);                         //Connects to SQL Server and extracts output data from R forecasting script
 
-            return;
+                if (status != null)
+                {
+                    break;
+                }
+                else
+                {
+                    Thread.Sleep(15000);                                //If data isn't ready in database, Main thread sleeps and tries again
+                }
+            }
         }
 
-        protected String DBWait(String output, String entity)
+        protected object DBWait(object result)                          //Function controlling cmd input to Rscript and output from SQL Server
         {
             using (SqlConnection conn = new SqlConnection())
             {
-                String localhostName = System.Environment.MachineName;
+                String localhostName = getLegalLocalName(server.Text);
+                
                 conn.ConnectionString = "Server=" + localhostName + "; Database=HaloMessageClient;Trusted_Connection=true";
                 conn.Open();
                 SqlCommand command = new SqlCommand("SELECT TOP 1 * FROM Queue.Message ORDER BY DateCreated DESC", conn);
                 
-
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        //if (reader[5] == null)
-                        //{
-                        //    newThread.sleep();
-                        //}
-                        entity = String.Format("{0}", reader[4]);
-                        outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]);
-                     
+                        if (reader.IsDBNull(4))
+                        {
+                            result = null;                              //Data is not ready - only partially stored in the database.
+                        }
+                        else
+                        {
+                            result = reader[4];                         //Data is present. Outputted to screen
+                            outputText.Text += String.Format("DateCreated: {0}, Output: {1}\n", reader[5], reader[8]);
+                        }
+                        
                     }
                 }
                 conn.Close();
             }
-            return entity;
+            return result;
         }
 
-        protected void RabbitMessaging_click() //Removed  object sender, EventArgs e   as not triggered from MLAPI.html
+        protected void RabbitMessaging_click()                          //Main function controlling the I/O to and from R Script
         {
 
-            Process receiveProcess = ReceiveCmd();
-            Process receiveResponseProcess = ReceiveResponseCmd();
+            Process receiveProcess = ReceiveCmd();                      //Triggers the background Process to recieve cmd output
+            Process receiveResponseProcess = ReceiveResponseCmd();      //Triggers the background Process to recieve R script output
 
-            ProcessStartInfo cmdStartInfo = new ProcessStartInfo
+            ProcessStartInfo cmdStartInfo = new ProcessStartInfo        //Triggers the Process to execute R script
             {
-                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
-                RedirectStandardOutput = true,
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",       //Subject to Change? To do
+                RedirectStandardOutput = true,                          
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 UseShellExecute = false,
                 CreateNoWindow = false,
                 Verb = "runas"
             };
-            String sessionID = "38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6";
-            String executionID = "100";
-            String param = TransformParams(parameters.Text);
+
+            //
+            //Parameters to send to R Script via cmd
+
+            String sessionID = "38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6";      //Is customisable though users won't understand it hence is hard-coded in backend
+            String executionID = "100";                                     // "  "
+            String serverText = getLegalLocalName(server.Text);             //Gets legally qualified name of database server
+            String stagingText = escapeEmptyStr(staging.Text);
+            String rScriptText = escapeEmptyStr(rScript.Text);
+            String param = TransformParams(parameters.Text);                //Tidies into R friendly TS data
             String startDate = TransformData(start.Text.ToString());
             String endDate = TransformData(end.Text.ToString());
-            cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + server.Text + " -d " + staging.Text + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
 
+            //Pass the parameters to the R Script via cmd argument
 
+            cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + serverText + " -d " + stagingText + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
+            
             Process cmdProcess = new Process
             {
                 StartInfo = cmdStartInfo
             };
-            //cmdProcess.ErrorDataReceived += Cmd_Error;                        //Removed because output is not needed for UI
-            //cmdProcess.OutputDataReceived += Cmd_DataReceived;
             cmdProcess.EnableRaisingEvents = true;
             cmdProcess.Start();
             cmdProcess.BeginOutputReadLine();
             cmdProcess.BeginErrorReadLine();
 
-            cmdProcess.StandardInput.WriteLine("exit");                  //Execute exit. 
-            cmdProcess.WaitForExit();
-
+            cmdProcess.StandardInput.WriteLine("exit");                 //Execute exit on Sending Process
+            cmdProcess.WaitForExit();                                   //Wait for gracefull exit
             
-            receiveProcess.Close();
-
-            receiveResponseProcess.Close();
+            receiveProcess.Close();                                     //Closes the background Process to recieve cmd output
+            receiveResponseProcess.Close();                             //Triggers the background Proess to recieve R script output
 
             return;
         }
 
-        protected Process ReceiveCmd()
+        protected Process ReceiveCmd()                                  //Triggers the background Process to recieve cmd output
         {
             ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo
             {
-                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",               //Subject to change
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
@@ -417,8 +423,6 @@ namespace HaloBI.Prism.Plugin
             {
                 StartInfo = cmdStartInfoRec
             };
-            //cmdProcessRec.ErrorDataReceived += Cmd_Error;                        //Removed because output is not needed for UI
-            //cmdProcessRec.OutputDataReceived += Cmd_DataReceived;
             cmdProcessRec.EnableRaisingEvents = true;
             cmdProcessRec.Start();
             cmdProcessRec.BeginOutputReadLine();
@@ -429,11 +433,11 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessRec;
         }
 
-        protected Process ReceiveResponseCmd()
+        protected Process ReceiveResponseCmd()                              //Triggers the background Process to recieve R script output
         {
             ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo
             {
-                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",           //Subject to change
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
@@ -447,8 +451,6 @@ namespace HaloBI.Prism.Plugin
             {
                 StartInfo = cmdStartInfoRecResp
             };
-            //cmdProcessResp.ErrorDataReceived += Cmd_Error;                        //Removed because output is not needed for UI
-            //cmdProcessResp.OutputDataReceived += Cmd_DataReceived;
             cmdProcessResp.EnableRaisingEvents = true;
             cmdProcessResp.Start();
             cmdProcessResp.BeginOutputReadLine();
@@ -459,15 +461,33 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessResp;
         }
 
-        //protected void Cmd_DataReceived(object sender, DataReceivedEventArgs e) //Removed because output is not needed for UI
-        //{
-        //    postData.Text += "Data: " + (e.Data) + "\n\n";
-        //}
+        protected String getLegalLocalName(String serverName)                   //Gets legally qualified name of database server
+        {
+            if (server.Text == "localhost /gmi")
+            {
+                return System.Environment.MachineName;
+            }
+            else if (serverName == "")
+            {
+                return "null";
+            }
+            else
+            {
+                return SecurityElement.Escape(server.Text);
+            }
+        }
 
-        //protected void Cmd_Error(object sender, DataReceivedEventArgs e)
-        //{
-        //    postData.Text += "Error: " + (e.Data) + "\n\n";
-        //}
+        protected String escapeEmptyStr(String field)                           //No empty parameter is passed into the cmd. Cmd will mistake empty param as EOL.
+        {
+            if (field == "")
+            {
+                return "null";
+            }
+            else
+            {
+                return SecurityElement.Escape(field);
+            }
+        }
 
         //End of Working Code
 
