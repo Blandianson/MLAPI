@@ -202,6 +202,15 @@ namespace HaloBI.Prism.Plugin {
         protected global::System.Web.UI.WebControls.TextBox outputText;
         
         /// <summary>
+        /// forecastOptions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList forecastOptions;
+        
+        /// <summary>
         /// outputButton control.
         /// </summary>
         /// <remarks>
@@ -209,23 +218,5 @@ namespace HaloBI.Prism.Plugin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button outputButton;
-        
-        /// <summary>
-        /// uiSelectedMembers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label uiSelectedMembers;
-        
-        /// <summary>
-        /// uiMembersList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList uiMembersList;
     }
 }

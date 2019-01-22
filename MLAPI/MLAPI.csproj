@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MLAPI.js" />
     <Content Include="Styles\MLAPI.css" />
     <Content Include="MLAPI.aspx" />
     <Content Include="Web.config">
