@@ -41,6 +41,6 @@ if(length(args) == 0){
   library(forecast)
   findbest <- auto.arima(levelTs)
   #plot(forecast(findbest, h=20))
-  print(forecast(findbest, h=20))
+  write.csv(forecast(findbest, points), "forecastOut.csv", row.names = FALSE)
   
 }

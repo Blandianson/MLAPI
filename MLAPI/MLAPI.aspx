@@ -6,7 +6,7 @@
 <head runat="server">
     <title></title>
 	<link href="Styles/MLAPI.css" rel="stylesheet" />
-    <script type="text/javascript" src="MLAPI.js"></script>
+    <%--<script type="text/javascript" src="MLAPI.js"></script>--%>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
