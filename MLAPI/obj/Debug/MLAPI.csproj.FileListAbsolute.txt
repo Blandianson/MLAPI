@@ -55,6 +55,7 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\bin\RabbitMQ.Client.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Songhay.Net.HttpWebRequest.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\WebDriver.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.Diagnostics.Tracing.EventSource.xml
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Newtonsoft.Json.xml
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\RabbitMQ.Client.xml
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\WebDriver.xml
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
@@ -65,6 +66,3 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\HaloBI.Prism.Plugin.MLAPI.p
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\MLAPI.csprojAssemblyReference.cache
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Highcharts.Web.Mvc.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Highcharts.Web.Mvc.xml
-C:\Users\Nicole.jackson\source\repos\MLAPI\bin\System.Threading.Tasks.Dataflow.dll
-C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Newtonsoft.Json.xml
-C:\Users\Nicole.jackson\source\repos\MLAPI\bin\System.Threading.Tasks.Dataflow.xml

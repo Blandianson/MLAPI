@@ -16,8 +16,6 @@ namespace HaloBI.Prism.Plugin
 {
     public partial class MLAPI : System.Web.UI.Page
     {
-        #region Plugin Config Code
-
         string _contextId = "";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -130,7 +128,6 @@ namespace HaloBI.Prism.Plugin
             HttpContext.Current.Session[sessionId] = JsonConvert.SerializeObject(context);
         }
 
-        #endregion
 
         #region  Working code
 
@@ -229,172 +226,133 @@ namespace HaloBI.Prism.Plugin
         /// </summary>
         protected void RabbitMessaging_click()
         {
+            //Triggers the background Process to recieve cmd output
+            Process receiveProcess = ReceiveCmd();
 
+            //Triggers the background Process to recieve R script output
+            Process receiveResponseProcess = ReceiveResponseCmd();
+
+            //Triggers the Process to execute R script
+            ProcessStartInfo cmdStartInfo = new ProcessStartInfo
+            {
+                //Subject to Change? To do
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,                          
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas"
+            };
+            
             //Parameters to send to R Script via cmd
 
             //Is customisable though users won't understand it hence is hard-coded in backend
-            //String sessionID = "38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6";
-            //// "  "
-            //String executionID = "100";
-            ////Gets legally qualified name of database server
-            //String serverText = getLegalLocalName(server.Text);
-            //String stagingText = escapeEmptyStr(staging.Text);
-            //String rScriptText = escapeEmptyStr(rScript.Text);
-            ////Tidies into R friendly TS data
-            ///
-
-
+            String sessionID = "38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6";
+            // "  "
+            String executionID = "100";
+            //Gets legally qualified name of database server
+            String serverText = getLegalLocalName(server.Text);
+            String stagingText = escapeEmptyStr(staging.Text);
+            String rScriptText = escapeEmptyStr(rScript.Text);
+            //Tidies into R friendly TS data
+            String param = TransformParams(parameters.Text);
             String startDate = TransformData(start.Text.ToString());
             String endDate = TransformData(end.Text.ToString());
-            String data = @"C:\Users\Nicole.jackson\source\repos\MLAPI\Data\Test_Data_set1";
-            var rPath = @"C:\R-3.5.2\bin\Rscript.exe";
-            var scriptPath = @"C:\Users\Nicole.jackson\source\repos\MLAPI\Data\dummyR.R";
+
+            //Pass the parameters to the R Script via cmd argument
+
+            cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + serverText + " -d " + stagingText + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
             
-            try
+            Process cmdProcess = new Process
             {
-                var info = new ProcessStartInfo
-                {
-                    FileName = rPath,
-                    WorkingDirectory = Path.GetDirectoryName(scriptPath),
-                    Arguments = scriptPath + " " + startDate + ", " + endDate + ", " + column.Text + ", " + forecast.Text + ", " + data,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
+                StartInfo = cmdStartInfo
+            };
+            cmdProcess.EnableRaisingEvents = true;
+            cmdProcess.Start();
+            cmdProcess.BeginOutputReadLine();
+            cmdProcess.BeginErrorReadLine();
 
-                using (var proc = new Process { StartInfo = info })
-                {
-                    proc.Start();
-                    outputText.Text = "Hello, is this working: " + proc.StandardOutput.ReadToEnd();
+            //Execute exit on Sending Process
+            cmdProcess.StandardInput.WriteLine("exit");
 
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                outputText.Text += e.ToString();
-            }
+            //Wait for gracefull exit
+            cmdProcess.WaitForExit();
 
+            //Closes the background Process to recieve cmd output
+            receiveProcess.Close();
 
+            //Triggers the background Proess to recieve R script output
+            receiveResponseProcess.Close();
 
-            ////Execute R script passing it read in file data
-            ////save data to file
-
-
-            ////Triggers the background Process to recieve cmd output
-            //Process receiveProcess = ReceiveCmd();
-
-            ////Triggers the background Process to recieve R script output
-            //Process receiveResponseProcess = ReceiveResponseCmd();
-
-            ////Triggers the Process to execute R script
-            //ProcessStartInfo cmdStartInfo = new ProcessStartInfo
-            //{
-            //    //Subject to Change? To do
-            //    FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
-            //    RedirectStandardOutput = true,                          
-            //    RedirectStandardError = true,
-            //    RedirectStandardInput = true,
-            //    UseShellExecute = false,
-            //    CreateNoWindow = false,
-            //    Verb = "runas"
-            //};
-
-
-
-            ////Pass the parameters to the R Script via cmd argument
-
-            //cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + serverText + " -d " + stagingText + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
-
-            //Process cmdProcess = new Process
-            //{
-            //    StartInfo = cmdStartInfo
-            //};
-            //cmdProcess.EnableRaisingEvents = true;
-            //cmdProcess.Start();
-            //cmdProcess.BeginOutputReadLine();
-            //cmdProcess.BeginErrorReadLine();
-
-            ////Execute exit on Sending Process
-            //cmdProcess.StandardInput.WriteLine("exit");
-
-            ////Wait for gracefull exit
-            //cmdProcess.WaitForExit();
-
-            ////Closes the background Process to recieve cmd output
-            //receiveProcess.Close();
-
-            ////Triggers the background Proess to recieve R script output
-            //receiveResponseProcess.Close();
-
-            //return;
+            return;
         }
 
         /// <summary>
         /// Triggers the background Process to recieve cmd output
         /// </summary>
         /// <returns></returns>
-        //protected Process ReceiveCmd()
-        //{
-        //    ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo
-        //    {
-        //        //Subject to change
-        //        FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
-        //        RedirectStandardOutput = true,
-        //        RedirectStandardError = true,
-        //        RedirectStandardInput = true,
-        //        UseShellExecute = false,
-        //        CreateNoWindow = false,
-        //        Verb = "runas",
-        //        Arguments = "receive"
-        //    };
+        protected Process ReceiveCmd()
+        {
+            ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo
+            {
+                //Subject to change
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas",
+                Arguments = "receive"
+            };
 
-        //    Process cmdProcessRec = new Process
-        //    {
-        //        StartInfo = cmdStartInfoRec
-        //    };
-        //    cmdProcessRec.EnableRaisingEvents = true;
-        //    cmdProcessRec.Start();
-        //    cmdProcessRec.BeginOutputReadLine();
-        //    cmdProcessRec.BeginErrorReadLine();
+            Process cmdProcessRec = new Process
+            {
+                StartInfo = cmdStartInfoRec
+            };
+            cmdProcessRec.EnableRaisingEvents = true;
+            cmdProcessRec.Start();
+            cmdProcessRec.BeginOutputReadLine();
+            cmdProcessRec.BeginErrorReadLine();
             
-        //    cmdProcessRec.StandardInput.Flush();
+            cmdProcessRec.StandardInput.Flush();
 
-        //    return cmdProcessRec;
-        //}
+            return cmdProcessRec;
+        }
 
-        ///// <summary>
-        ///// Triggers the background Process to recieve R script output
-        ///// </summary>
-        ///// <returns></returns>
-        //protected Process ReceiveResponseCmd()
-        //{
-        //    ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo
-        //    {
-        //        //Subject to change
-        //        FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
-        //        RedirectStandardOutput = true,
-        //        RedirectStandardError = true,
-        //        RedirectStandardInput = true,
-        //        UseShellExecute = false,
-        //        CreateNoWindow = false,
-        //        Verb = "runas",
-        //        Arguments = "receiveresponse"
-        //    };
+        /// <summary>
+        /// Triggers the background Process to recieve R script output
+        /// </summary>
+        /// <returns></returns>
+        protected Process ReceiveResponseCmd()
+        {
+            ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo
+            {
+                //Subject to change
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas",
+                Arguments = "receiveresponse"
+            };
 
-        //    Process cmdProcessResp = new Process
-        //    {
-        //        StartInfo = cmdStartInfoRecResp
-        //    };
-        //    cmdProcessResp.EnableRaisingEvents = true;
-        //    cmdProcessResp.Start();
-        //    cmdProcessResp.BeginOutputReadLine();
-        //    cmdProcessResp.BeginErrorReadLine();
+            Process cmdProcessResp = new Process
+            {
+                StartInfo = cmdStartInfoRecResp
+            };
+            cmdProcessResp.EnableRaisingEvents = true;
+            cmdProcessResp.Start();
+            cmdProcessResp.BeginOutputReadLine();
+            cmdProcessResp.BeginErrorReadLine();
             
-        //    cmdProcessResp.StandardInput.Flush();
+            cmdProcessResp.StandardInput.Flush();
 
-        //    return cmdProcessResp;
-        //}
+            return cmdProcessResp;
+        }
 
         /// <summary>
         /// Gets legally qualified name of database server
