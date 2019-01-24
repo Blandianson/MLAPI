@@ -5,6 +5,10 @@ using System.Runtime.Caching;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Web;
+using System.Collections.Generic;
+using CsvHelper;
+using System.IO;
+using System.Text;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -18,7 +22,38 @@ namespace HaloBI.Prism.Plugin
             _context = context;
 		}
 
-        internal DataTable GetDataTable(string paneId)
+        //internal List<List<string>> GetData(string paneId)
+        internal String GetData(string paneId)
+        {
+            //var data = new List<List<string>>();
+            String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
+            String data = "";
+            String filePath = @"C:\Users\Nicole.jackson\source\repos\MLAPI\Data\input_to_ADAR.csv";
+            //String filePath = @"\\dev-ph5\share\interns\";
+            StringBuilder dataStr = new StringBuilder();
+
+            dataStr.AppendLine(headerStr);
+
+            var dt = GetDataTable(paneId);
+
+            foreach (DataRow r in dt.Rows)
+            {
+                //String nameCol0 = r["name"] + ", " + r["col0"];
+                //List<string> rowData;
+                //rowData.Add(nameCol0);
+                //data.Add(rowData);
+
+                data += "1,1," + r["name"] + "," + r["col0"] + "\n";
+            }
+
+            dataStr.Append(data);
+            dataStr.Append(data);
+            File.WriteAllText(filePath, dataStr.ToString());
+
+            return data;
+        }
+
+        public DataTable GetDataTable(string paneId)
         {
             var cacheKey = GetCacheKey(paneId);
             var dt = new DataTable();

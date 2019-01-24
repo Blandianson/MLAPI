@@ -168,12 +168,13 @@ namespace HaloBI.Prism.Plugin
 
             var context = GetContext(_contextId);
             var dataLayer = new DataLayer(context);
-            var timeSeries = dataLayer.GetDataTable("002");
+            var timeSeries = dataLayer.GetData("002");
+
 
 
             if (timeSeries != null)
             {
-                debg.Text = timeSeries.TableName;
+                debg.Text = timeSeries;
             }
             else
             {

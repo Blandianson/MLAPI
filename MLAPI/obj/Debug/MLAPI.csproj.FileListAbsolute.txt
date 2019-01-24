@@ -66,3 +66,7 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\HaloBI.Prism.Plugin.MLAPI.p
 C:\Users\Nicole.jackson\source\repos\MLAPI\obj\Debug\MLAPI.csprojAssemblyReference.cache
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Highcharts.Web.Mvc.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\Highcharts.Web.Mvc.xml
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\CsvHelper.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\System.ValueTuple.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\CsvHelper.xml
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\System.ValueTuple.xml
