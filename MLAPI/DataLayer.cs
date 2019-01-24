@@ -28,8 +28,8 @@ namespace HaloBI.Prism.Plugin
             //var data = new List<List<string>>();
             String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
             String data = "";
-            String filePath = @"C:\Users\Nicole.jackson\source\repos\MLAPI\Data\input_to_ADAR.csv";
-            //String filePath = @"\\dev-ph5\share\interns\";
+            //String filePath = @"C:\Users\Nicole.jackson\source\repos\MLAPI\Data\input_to_ADAR.csv";
+            var filePath = @"C:\Halo\ADAR\input_to_ADAR.csv";
             StringBuilder dataStr = new StringBuilder();
 
             dataStr.AppendLine(headerStr);
