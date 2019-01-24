@@ -16,6 +16,8 @@ namespace HaloBI.Prism.Plugin
 {
     public partial class MLAPI : System.Web.UI.Page
     {
+#region Plugin Config
+
         string _contextId = "";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -104,6 +106,8 @@ namespace HaloBI.Prism.Plugin
                     paneId,
                     ""
 			);
+
+            //debg.Text = GetContext(_contextId).ToString();
         }
         
         /// <summary>
@@ -128,6 +132,7 @@ namespace HaloBI.Prism.Plugin
             HttpContext.Current.Session[sessionId] = JsonConvert.SerializeObject(context);
         }
 
+        #endregion
 
         #region  Working code
 
@@ -159,8 +164,26 @@ namespace HaloBI.Prism.Plugin
         /// <param name="e"></param>
         protected void Request_click(object sender, EventArgs e)
         {
+            // Test getting data from cache
+
+            var context = GetContext(_contextId);
+            var dataLayer = new DataLayer(context);
+            var timeSeries = dataLayer.GetDataTable("002");
+
+
+            if (timeSeries != null)
+            {
+                debg.Text = timeSeries.TableName;
+            }
+            else
+            {
+                debg.Text = "Timeseries is null";
+            }
+
+
+
             //Function controlling cmd input to Rscript and output from SQL Server
-            RabbitMessaging_click();
+            //FileIO();
 
             //Database checking timeout
             var endTime = DateTime.Now.AddSeconds(120);
@@ -224,8 +247,9 @@ namespace HaloBI.Prism.Plugin
         /// <summary>
         /// Main function controlling the I/O to and from R Script
         /// </summary>
-        protected void RabbitMessaging_click()
+        protected void FileIO()
         {
+
             //Triggers the background Process to recieve cmd output
             Process receiveProcess = ReceiveCmd();
 
@@ -237,14 +261,14 @@ namespace HaloBI.Prism.Plugin
             {
                 //Subject to Change? To do
                 FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
-                RedirectStandardOutput = true,                          
+                RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 UseShellExecute = false,
                 CreateNoWindow = false,
                 Verb = "runas"
             };
-            
+
             //Parameters to send to R Script via cmd
 
             //Is customisable though users won't understand it hence is hard-coded in backend
@@ -262,8 +286,8 @@ namespace HaloBI.Prism.Plugin
 
             //Pass the parameters to the R Script via cmd argument
 
-            cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + serverText + " -d " + stagingText + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text +  "," + param;
-            
+            cmdStartInfo.Arguments = "send -s " + sessionID + " -f " + executionID + " -i " + serverText + " -d " + stagingText + " -t " + fileType.SelectedValue + " -l " + rScript.Text + " -p " + startDate + "," + endDate + "," + column.Text + "," + forecast.Text + "," + param;
+
             Process cmdProcess = new Process
             {
                 StartInfo = cmdStartInfo
@@ -315,7 +339,7 @@ namespace HaloBI.Prism.Plugin
             cmdProcessRec.Start();
             cmdProcessRec.BeginOutputReadLine();
             cmdProcessRec.BeginErrorReadLine();
-            
+
             cmdProcessRec.StandardInput.Flush();
 
             return cmdProcessRec;
@@ -348,7 +372,7 @@ namespace HaloBI.Prism.Plugin
             cmdProcessResp.Start();
             cmdProcessResp.BeginOutputReadLine();
             cmdProcessResp.BeginErrorReadLine();
-            
+
             cmdProcessResp.StandardInput.Flush();
 
             return cmdProcessResp;
