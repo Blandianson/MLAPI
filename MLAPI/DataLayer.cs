@@ -50,6 +50,7 @@ namespace HaloBI.Prism.Plugin
             dataStr.Append(data);
             File.WriteAllText(filePath, dataStr.ToString());
 
+
             return data;
         }
 

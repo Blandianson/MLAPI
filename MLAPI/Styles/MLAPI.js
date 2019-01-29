@@ -1,55 +1,26 @@
-﻿$(document).ready(function () {
+﻿function getInput(data) {
+    
+    var baseDataRowList = [];
+    var baseData = [];
 
-    //Highcharts Config
-
-    let rawBaseData = $("#parameters").val().trim();
-    let baseDataList = rawBaseData.split("\n");
-
-    let baseDataRowList = [];
-
-    for (i = 0; i < baseDataList.length; i++) {
-        baseDataRowList.push(baseDataList[i].split(","));
+    var dataLines = data.split("\n");
+    for (i = 0; i < dataLines.length; i++) {
+        baseDataRowList.push(dataLines[i].split(","));
     }
 
-    let baseDate = [];
-    let baseData = [];
-
-    for (k = 0; k < baseDataRowList.length; k++) {
-        let ISODate = baseDataRowList[k][0];
-        ISODate = ISODate.replace(/"/g, '');
-        ISODate = ISODate.split(/\-/);
-        ISODate = new Date(parseInt(ISODate[0]), parseInt(ISODate[1]) - 1);
-        baseDate.push(ISODate.getFullYear());
-        baseData.push(parseFloat(baseDataRowList[k][1]));
+    for (k = 0; k < baseDataRowList.length - 1; k++) {
+        var isoDate = baseDataRowList[k][2];
+        var date = isoDate.slice(4, 6) + "/" + isoDate.slice(6) + "/" + isoDate.slice(0, 4);
+        var parseData = parseFloat(baseDataRowList[k][3])
+        baseData.push([date, parseData]);
     }
 
-    //Forecasted Data
+    return baseData;
+}
 
-    let resultStr = $("#outputText").val();
-    let dataStr = resultStr.slice(resultStr.indexOf("Jan"));
-    dataStr = dataStr.trim();
-    let dataList = dataStr.split("\n");
+function initHighchart(baseData, stepSize, firstForecast, cleanArray) {
 
-    let dataRowList = [];
-
-    for (i = 0; i < dataList.length; i++) {
-        dataRowList.push(dataList[i].trim().split(/\s+/));
-
-    }
-
-    let dateList = [];
-    let forecastDataList = [];
-    let firstDataPt = baseDate.length;
-
-    for (i = 0; i < dataRowList.length; i++) {
-        baseDate.push(dataRowList[i][1]);
-        baseData.push(parseFloat(dataRowList[i][2]));
-    }
-
-    let stepSize = baseDate.length / 100;
-
-    //Visualisation
-
+    ////Visualisation
 
     var myChart = Highcharts.chart('container', {
         chart: {
@@ -60,30 +31,75 @@
             panKey: 'ctrl'
         },
         title: {
-            text: 'Lake Erie Water Levels'
+            text: 'Sales Quantity over Time'
         },
         xAxis: {
-            categories: baseDate,
+            type: 'datetime',
             labels: {
                 step: 5
             },
-            tickInterval: 20
+            tickInterval: 20,
+            dateTimeLabelFormats: {
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: 'Date'
+            }
         },
         yAxis: {
             title: {
-                text: 'Water Level (m)'
+                text: 'Sales'
             }
         },
         series: [{
-            name: 'Forecast',
+            name: 'Base Data',
             data: baseData,
             zoneAxis: 'x',
             zones: [{
-                value: firstDataPt
+                value: firstForecast
             }, {
                 dashStyle: 'dot',
                 color: 'orange'
             }],
         }]
     });
+
+    myChart.addSeries({
+        data: cleanArray,
+        color: 'red'
+    }, true);
+}
+
+function getCleaned(data) {
+
+    var baseDataRowList = [];
+    var baseData = [];
+
+    var dataLines = data.split("\n");
+    for (i = 0; i < dataLines.length; i++) {
+        baseDataRowList.push(dataLines[i].split(","));
+    }
+
+    for (k = 1; k < baseDataRowList.length - 1; k++) {
+        var isoDate = baseDataRowList[k][2];
+        var date = isoDate.slice(5, 7) + "/" + isoDate.slice(8) + "/" + isoDate.slice(0, 4);
+        var parseData = parseFloat(baseDataRowList[k][3])
+        baseData.push([date, parseData]);
+    }
+
+    return baseData;
+}
+
+function collectData(inputArray, forecastArray) {
+    return inputArray.concat(forecastArray)
+}
+
+$(document).ready(function () {
+    var inputArray = getInput($("#inputData").val());
+    var cleanArray = getCleaned($("#cleanedData").val());
+    var forecastArray = getCleaned($("#forecastData").val());
+    var allPoints = collectData(inputArray, forecastArray);
+    console.log(allPoints)
+    initHighchart(allPoints, allPoints.length/10, inputArray.length, cleanArray);
 });
