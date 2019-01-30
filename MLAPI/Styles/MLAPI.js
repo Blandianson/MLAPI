@@ -81,9 +81,10 @@ function collectData(inputArray, forecastArray) {
 }
 
 //Show Cleaned Data and/or Holiday Consideration
-function additionalOptions(cleanArray) {
+function additionalOptions() {
     var radio = document.getElementsByName("forecastRadio");
-    
+
+    console.log(radio[0].checked + " " + radio[1].value)
     for (var i = 0; i < radio.length; i++) {
 
         if (radio[i].checked && radio[i].value == "1") {
@@ -102,5 +103,5 @@ $(document).ready(function () {
     var allPoints = collectData(inputArray, forecastArray);
     initHighchart(allPoints, inputArray.length);
 
-    additionalOptions(cleanArray);
+    additionalOptions();
 });

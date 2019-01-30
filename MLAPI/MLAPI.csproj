@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config.json" />
+    <Content Include="dummyR.R" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

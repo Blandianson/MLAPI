@@ -26,7 +26,7 @@ namespace HaloBI.Prism.Plugin
         {
             String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
             String data = "";
-            var filePath = @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv";
+            var filePath = @"C:\Halo\ADAR\input_to_ADAR.csv";
             StringBuilder dataStr = new StringBuilder();
 
             dataStr.AppendLine(headerStr);
