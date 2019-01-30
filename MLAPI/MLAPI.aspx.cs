@@ -135,9 +135,7 @@ namespace HaloBI.Prism.Plugin
         #endregion
 
         #region  Working code
-
-        public String timeSeries;
-
+        
         /// <summary>
         /// Triggers Forecasting R script and returns TS forecast in text form
         /// </summary>
@@ -157,14 +155,19 @@ namespace HaloBI.Prism.Plugin
                 inputData.Text = readOutput("input_to_ADAR.csv");
                 cleanedData.Text = readOutput("cleaned_data.csv");
                 forecastData.Text = readOutput("output.csv");
+                outputText.Text += readOutput("input_to_ADAR.csv") + readOutput("output.csv");
             }
             else
             {
                 inputData.Text = "Timeseries is null";
             }
-
         }
 
+        /// <summary>
+        /// Reads in the base, forecast, and cleaned Data.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         protected String readOutput(String filename)
         {
             string path = @"C:\Halo\ADAR\inputs and outputs\" + filename;
@@ -180,11 +183,11 @@ namespace HaloBI.Prism.Plugin
             string s;
             while((s = sr.ReadLine()) != null)
             {
-                outputText.Text += s + "\n";
                 outputLines += s + "\n";
             }
             return outputLines;
         }
+
         #endregion 
     }
 }

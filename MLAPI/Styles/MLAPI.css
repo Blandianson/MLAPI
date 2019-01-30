@@ -62,10 +62,6 @@ select {
         border: 1px solid #88D5E9;
     }
 
-#wrapperForm .field-divided {
-    width: 49%;
-}
-
 #wrapperForm .field-long {
     width: 100%;
 }
@@ -108,16 +104,6 @@ select {
 
 .inputTBoxes {
     height: 35px;
-}
-
-/* some simple demo styles for all collapsibles on this page */
-.wrapperForm-header,
-.wrapperForm-content {
-    border: 1px solid #ccc;
-    padding: .7em 35px;
-    font-size: 1em;
-    margin-top: 0;
-    background-color: #fff;
 }
 
 .wrapperForm-content {

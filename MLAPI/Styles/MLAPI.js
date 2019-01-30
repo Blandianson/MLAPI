@@ -1,31 +1,12 @@
-﻿function getInput(data) {
+﻿var mychart;
+
+//initalise the graph with base data and forecast
+function initHighchart(baseData, firstForecast) {
     
-    var baseDataRowList = [];
-    var baseData = [];
-
-    var dataLines = data.split("\n");
-    for (i = 0; i < dataLines.length; i++) {
-        baseDataRowList.push(dataLines[i].split(","));
-    }
-
-    for (k = 0; k < baseDataRowList.length - 1; k++) {
-        var isoDate = baseDataRowList[k][2];
-        var date = isoDate.slice(4, 6) + "/" + isoDate.slice(6) + "/" + isoDate.slice(0, 4);
-        var parseData = parseFloat(baseDataRowList[k][3])
-        baseData.push([date, parseData]);
-    }
-
-    return baseData;
-}
-
-function initHighchart(baseData, stepSize, firstForecast, cleanArray) {
-
-    ////Visualisation
-
-    var myChart = Highcharts.chart('container', {
+    myChart = Highcharts.chart('container', {
         chart: {
             borderWidth: 1,
-            type: 'line',
+            type: 'spline',
             zoomType: 'x',
             panning: true,
             panKey: 'ctrl'
@@ -35,10 +16,6 @@ function initHighchart(baseData, stepSize, firstForecast, cleanArray) {
         },
         xAxis: {
             type: 'datetime',
-            labels: {
-                step: 5
-            },
-            tickInterval: 20,
             dateTimeLabelFormats: {
                 month: '%e. %b',
                 year: '%b'
@@ -56,23 +33,30 @@ function initHighchart(baseData, stepSize, firstForecast, cleanArray) {
             name: 'Base Data',
             data: baseData,
             zoneAxis: 'x',
+            color: '#b3b3ff',
             zones: [{
                 value: firstForecast
             }, {
-                dashStyle: 'dot',
                 color: 'orange'
             }],
         }]
     });
+}
+
+//Add ADAR data to graph
+function showCleanedData(cleanArray){
 
     myChart.addSeries({
         data: cleanArray,
-        color: 'red'
+        color: '#4d4dff',
+        name: 'ADAR'
     }, true);
+
 }
 
-function getCleaned(data) {
-
+//Formats the data to how Highcharts accepts data.
+function formatTimeSeries(data, startYr, endYr, startMnth, endMnth, startDay) {
+    
     var baseDataRowList = [];
     var baseData = [];
 
@@ -81,9 +65,9 @@ function getCleaned(data) {
         baseDataRowList.push(dataLines[i].split(","));
     }
 
-    for (k = 1; k < baseDataRowList.length - 1; k++) {
+    for (k = 0; k < baseDataRowList.length - 1; k++) {
         var isoDate = baseDataRowList[k][2];
-        var date = isoDate.slice(5, 7) + "/" + isoDate.slice(8) + "/" + isoDate.slice(0, 4);
+        var date = new Date(parseFloat(isoDate.slice(startYr, endYr)), parseFloat(isoDate.slice(startMnth, endMnth)) - 1, parseFloat(isoDate.slice(startDay)));
         var parseData = parseFloat(baseDataRowList[k][3])
         baseData.push([date, parseData]);
     }
@@ -91,15 +75,33 @@ function getCleaned(data) {
     return baseData;
 }
 
+//Aggregates the seperate data sources to one Array
 function collectData(inputArray, forecastArray) {
     return inputArray.concat(forecastArray)
 }
 
+//Show Cleaned Data and/or Holiday Consideration
+function additionalOptions() {
+    var radio = document.getElementsByName("forecastRadio");
+
+    console.log(radio[0].checked + " " + radio[1].value)
+    for (var i = 0; i < radio.length; i++) {
+
+        if (radio[i].checked && radio[i].value == "1") {
+
+            showCleanedData(cleanArray);
+
+        }
+    }
+}
+
+//Main function
 $(document).ready(function () {
-    var inputArray = getInput($("#inputData").val());
-    var cleanArray = getCleaned($("#cleanedData").val());
-    var forecastArray = getCleaned($("#forecastData").val());
+    var inputArray = formatTimeSeries($("#inputData").val(), 0, 4, 4, 6, 6);
+    var cleanArray = formatTimeSeries($("#cleanedData").val(), 0, 4, 5, 7, 8);
+    var forecastArray = formatTimeSeries($("#forecastData").val(), 0, 4, 5, 7, 8);
     var allPoints = collectData(inputArray, forecastArray);
-    console.log(allPoints)
-    initHighchart(allPoints, allPoints.length/10, inputArray.length, cleanArray);
+    initHighchart(allPoints, inputArray.length);
+
+    additionalOptions();
 });
