@@ -14,24 +14,26 @@ namespace HaloBI.Prism.Plugin
 {
     public class DataLayer
 
-	{
+    {
         private JObject _context;
 
-		internal DataLayer(JObject context)
-		{
+        internal DataLayer(JObject context)
+        {
             _context = context;
-		}
-        
-        internal String GetData(string paneId)
+        }
+
+        /// <summary>
+        /// Get data cache for specified paneId and write to a file
+        /// </summary>
+        /// <param name="paneId"></param>
+        internal void WriteTimeSeriesToFile(DataTable dt, string filePath) //Error is not writing to file
         {
             String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
             String data = "";
-            var filePath = @"C:\Halo\ADAR\input_to_ADAR.csv";
             StringBuilder dataStr = new StringBuilder();
 
             dataStr.AppendLine(headerStr);
 
-            var dt = GetDataTable(paneId);
 
             foreach (DataRow r in dt.Rows)
             {
@@ -39,10 +41,7 @@ namespace HaloBI.Prism.Plugin
             }
 
             dataStr.Append(data);
-            dataStr.Append(data);
             File.WriteAllText(filePath, dataStr.ToString());
-
-            return data;
         }
 
         public DataTable GetDataTable(string paneId)

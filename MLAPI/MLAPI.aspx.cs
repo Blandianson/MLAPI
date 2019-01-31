@@ -24,6 +24,11 @@ namespace HaloBI.Prism.Plugin
         {
             _contextId = Request.QueryString["sessionId"];
 
+            if (_contextId == null)
+            {
+                throw new Exception("_contextId is null");
+            }
+
             if (!Page.IsPostBack)
             {
                 var context = GetContext(_contextId);
@@ -120,6 +125,7 @@ namespace HaloBI.Prism.Plugin
             return JObject.Parse(
                 HttpContext.Current.Session[sessionId].ToString()
             );
+
         }
 
         /// <summary>
@@ -144,23 +150,52 @@ namespace HaloBI.Prism.Plugin
         /// 
         protected void Request_click(object sender, EventArgs e)
         {
+            //outputText.Text = HttpContext.Current.Session[_contextId].ToString();
+
+            //var test = JObject.Parse(
+            //    outputText.Text
+            //);
+
+            //throw new Exception("parsed ok ");
+
+            //return;
+            
+            
+            
             // Test getting data from cache
 
-            var context = GetContext(_contextId);
-            var dataLayer = new DataLayer(context);
-            var timeSeries = dataLayer.GetData("002");
 
-            if (timeSeries != null)
+
+            var context = GetContext(_contextId);
+
+            //throw new Exception("context get is done ");
+
+            //if (context == null)
+            //{
+            //    throw new Exception("context is null");
+            //}
+
+            
+
+            var dataLayer = new DataLayer(context);
+            var timeSeriesDataTable = dataLayer.GetDataTable("002");
+            
+
+            dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
+
+            //if (timeSeries != null)
             {
                 inputData.Text = readOutput("input_to_ADAR.csv");
                 cleanedData.Text = readOutput("cleaned_data.csv");
                 forecastData.Text = readOutput("output.csv");
+
+                outputText.Text += context;
                 outputText.Text += readOutput("input_to_ADAR.csv") + readOutput("output.csv");
             }
-            else
-            {
-                inputData.Text = "Timeseries is null";
-            }
+            //else
+            //{
+            //    inputData.Text = "Timeseries is null";
+            //}
         }
 
         /// <summary>
@@ -173,10 +208,11 @@ namespace HaloBI.Prism.Plugin
             string path = @"C:\Halo\ADAR\inputs and outputs\" + filename;
             String outputLines = "";
 
-            while(!File.Exists(path))
+
+            while (!File.Exists(path)) ///This is the error!
             {
                 outputText.Text += "Data is loading";
-                Thread.Sleep(15000);
+                Thread.Sleep(5000);
             }
 
             StreamReader sr = File.OpenText(path);

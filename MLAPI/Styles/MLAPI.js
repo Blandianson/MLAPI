@@ -41,6 +41,7 @@ function initHighchart(baseData, firstForecast) {
             }],
         }]
     });
+
 }
 
 //Add ADAR data to graph
@@ -81,12 +82,30 @@ function collectData(inputArray, forecastArray) {
 }
 
 //Show Cleaned Data and/or Holiday Consideration
-function additionalOptions() {
-    var radio = document.getElementsByName("forecastRadio");
+function additionalOptions(cleanArray) {
+    //var radio = document.getElementsByName("forecastRadio");
 
-    console.log(radio[0].checked + " " + radio[1].value)
+    //for (var i = 0; i < radio.length; i++) {
+
+    //    if (radio[i].checked) {
+    //        console.log(radio[i].value);
+    //    }
+    //    if (radio[i].checked && radio[i].value == "1") {
+
+    //        showCleanedData(cleanArray);
+
+    //    }
+    //}
+    var radio = document.getElementsById("forscastType");
+    console.log(radio);
+
     for (var i = 0; i < radio.length; i++) {
-
+        if ($("#forscastType").prop("checked", true)) {
+            console.log("It worked");
+        }
+        if (radio[i].checked) {
+            console.log(radio[i].value);
+        }
         if (radio[i].checked && radio[i].value == "1") {
 
             showCleanedData(cleanArray);
@@ -102,6 +121,7 @@ $(document).ready(function () {
     var forecastArray = formatTimeSeries($("#forecastData").val(), 0, 4, 5, 7, 8);
     var allPoints = collectData(inputArray, forecastArray);
     initHighchart(allPoints, inputArray.length);
+    showCleanedData(cleanArray);
 
-    additionalOptions();
+    //additionalOptions(cleanArray);
 });
