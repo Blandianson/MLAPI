@@ -57,6 +57,10 @@
                 <div class="col-sm-12"><button id="demo" onclick="demoRun()"/>Return Forecast [Demo]</div>
             </div> 
 
+            <div class="row"> <%--Real Button--%>   
+                <div class="col-sm-12"><button id="real" />Return Real Forecast</div>
+            </div>
+
 
             <div class="row" style="display:none"> <%--Input Test--%>
                 <div class="col-sm-12"><asp:Label runat="server" ID="inpt" CssClass="fieldLabel">Input</asp:Label>
