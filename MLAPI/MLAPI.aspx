@@ -51,14 +51,6 @@
 
             <div class="row"> <%--Go Button--%>   
                 <div class="col-sm-12"><asp:Button ID="outputButton" runat="server" text="Return Forecast" AutoPostBack="True" onclick="Request_click"/></div>
-            </div>    
-            
-            <div class="row"> <%--Demo Button--%>   
-                <div class="col-sm-12"><button id="demo" onclick="demoRun()"/>Return Forecast [Demo]</div>
-            </div> 
-
-            <div class="row"> <%--Real Button--%>   
-                <div class="col-sm-12"><button id="real" />Return Real Forecast</div>
             </div>
 
 
