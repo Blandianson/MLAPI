@@ -40,18 +40,6 @@
 
             <div class="row"> <%--Forecast Type--%>   
                 <div class="col-sm-12">
-<%--                    <div class="header" runat="server">
-                        <input type="radio" id="normal" name="forecastRadio" value="0"/>
-                        <label for="normal"">Normal Forecast</label>
-                        <br />
-                        <input type="radio" id="ADAR" name="forecastRadio" value="1" checked="checked"/>
-                        <label for="normal"">Enable ADAR Cleansing</label>--%>
-                        <%-- <asp:ListItem Selected="true" Value="1"> Enable ADAR Cleansing</asp:ListItem>--%>
-                        <%--<br />
-                        <input type="radio" id="ADARhol" name="forecastRadio" value="2" />
-                        <label for="normal"">Enable ADAR Cleansing (with Holiday Consideration)</label>--%>
-                        <%--<asp:ListItem Value="2"> Enable ADAR Cleansing (with Holiday Consideration)</asp:ListItem>--%>
-                    <%--</div>--%>
                     <asp:RadioButtonList id="forscastType" runat="server" AutoPostBack="true" onchange="javascript:additionalOptions('12345567, 234556)">
                         <asp:ListItem Value="0"> Normal Forecast</asp:ListItem>
                         <asp:ListItem Value="1" Selected="True"> Enable ADAR Cleansing</asp:ListItem>
@@ -63,7 +51,11 @@
 
             <div class="row"> <%--Go Button--%>   
                 <div class="col-sm-12"><asp:Button ID="outputButton" runat="server" text="Return Forecast" AutoPostBack="True" onclick="Request_click"/></div>
-            </div>                
+            </div>    
+            
+            <div class="row"> <%--Demo Button--%>   
+                <div class="col-sm-12"><button id="demo" onclick="demoRun()"/>Return Forecast [Demo]</div>
+            </div> 
 
 
             <div class="row" style="display:none"> <%--Input Test--%>
@@ -77,8 +69,13 @@
             </div>
 
             <div class="row" style="display:none"> <%--Forecast Test--%>
-                <div class="col-sm-12"><asp:Label runat="server" ID="frcst" CssClass="fieldLabel">Forecast</asp:Label>
-                <asp:TextBox ID="forecastData" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
+                <div class="col-sm-12"><asp:Label runat="server" ID="clnfrcst" CssClass="fieldLabel">Forecast</asp:Label>
+                <asp:TextBox ID="cleanForecast" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
+            </div>
+
+            <div class="row" style="display:none"> <%--Forecast Test--%>
+                <div class="col-sm-12"><asp:Label runat="server" ID="actlfrcst" CssClass="fieldLabel">Forecast</asp:Label>
+                <asp:TextBox ID="actualForecast" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
             </div>
         </div>
     </form>

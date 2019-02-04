@@ -42,6 +42,26 @@ namespace HaloBI.Prism.Plugin
 
             dataStr.Append(data);
             File.WriteAllText(filePath, dataStr.ToString());
+
+        }
+        
+        internal void WriteADARInput(DataTable dt, string filePath)
+        {
+            String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
+            String data = "";
+            StringBuilder dataStr = new StringBuilder();
+
+            dataStr.AppendLine(headerStr);
+
+            var maxADAR = dt.Rows.Count - 30;
+            for (var i = 0; i < maxADAR; i++)
+            {
+                DataRow r = dt.Rows[i];
+                data += "1,1," + r["name"] + "," + r["col0"] + "\n";
+            }
+            dataStr.Append(data);
+            File.WriteAllText(filePath, dataStr.ToString());
+
         }
 
         public DataTable GetDataTable(string paneId)

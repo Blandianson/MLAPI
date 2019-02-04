@@ -3,14 +3,11 @@ using System;
 using System.IO;
 using System.Web;
 using System.Web.UI;
-using System.Diagnostics;
 using System.Web.Services;
-using System.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Threading;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Security;
+using System.Diagnostics;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -150,52 +147,22 @@ namespace HaloBI.Prism.Plugin
         /// 
         protected void Request_click(object sender, EventArgs e)
         {
-            //outputText.Text = HttpContext.Current.Session[_contextId].ToString();
-
-            //var test = JObject.Parse(
-            //    outputText.Text
-            //);
-
-            //throw new Exception("parsed ok ");
-
-            //return;
-            
-            
-            
-            // Test getting data from cache
-
-
-
             var context = GetContext(_contextId);
-
-            //throw new Exception("context get is done ");
-
-            //if (context == null)
-            //{
-            //    throw new Exception("context is null");
-            //}
-
-            
 
             var dataLayer = new DataLayer(context);
             var timeSeriesDataTable = dataLayer.GetDataTable("002");
             
 
-            dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
+            dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
+            dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
 
-            //if (timeSeries != null)
-            {
-                inputData.Text = readOutput("input_to_ADAR.csv");
-                cleanedData.Text = readOutput("cleaned_data.csv");
-                forecastData.Text = readOutput("output.csv");
+            triggerADAR();
 
-                outputText.Text += context;
-                outputText.Text += readOutput("input_to_ADAR.csv") + readOutput("output.csv");
-            }
-            //else
-            //{
-            //    inputData.Text = "Timeseries is null";
-            //}
+            inputData.Text = readOutput("full_base_data.csv");
+            cleanedData.Text = readOutput("full_cleaned_data.csv");
+            cleanForecast.Text = readOutput("output.csv");
+            actualForecast.Text = readOutput("output_actual.csv");
+            outputText.Text += readOutput("full_base_data.csv") + readOutput("output.csv");
         }
 
         /// <summary>
@@ -209,7 +176,7 @@ namespace HaloBI.Prism.Plugin
             String outputLines = "";
 
 
-            while (!File.Exists(path)) ///This is the error!
+            while (!File.Exists(path)) ///This was the error, file was being written to another file.
             {
                 outputText.Text += "Data is loading";
                 Thread.Sleep(5000);
@@ -221,8 +188,125 @@ namespace HaloBI.Prism.Plugin
             {
                 outputLines += s + "\n";
             }
+            sr.Close();
             return outputLines;
         }
+
+        protected void triggerADAR()
+        {
+            //Triggers the background Process to recieve cmd output
+            Process receiveProcess = ReceiveCmd();
+
+            //Triggers the background Process to recieve R script output
+            Process receiveResponseProcess = ReceiveResponseCmd();
+
+            //Triggers the Process to execute R script
+            ProcessStartInfo cmdStartInfo = new ProcessStartInfo
+            {
+                //Subject to Change? To do
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas"
+            };
+
+            //Pass the parameters to the R Script via cmd argument
+            cmdStartInfo.Arguments = "send -s 38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6 -f 100 -i DESKTOP-SK1K62B -d xxx -t 0 -l C:\\Halo\\ADAR\\AnomalyDetectionAndRemoval.R -p \"inputs and outputs,config,input_to_ADAR\"";
+            
+            Process cmdProcess = new Process
+            {
+                StartInfo = cmdStartInfo
+            };
+            cmdProcess.EnableRaisingEvents = true;
+            cmdProcess.Start();
+            cmdProcess.BeginOutputReadLine();
+            cmdProcess.BeginErrorReadLine();
+
+            //Execute exit on Sending Process
+            cmdProcess.StandardInput.WriteLine("exit");
+
+            //Wait for gracefull exit
+            cmdProcess.WaitForExit();
+
+            //Closes the background Process to recieve cmd output
+            receiveProcess.Close();
+
+            //Triggers the background Proess to recieve R script output
+            receiveResponseProcess.Close();
+
+            return;
+        }
+
+        /// <summary>
+        /// Triggers the background Process to recieve cmd output
+        /// </summary>
+        /// <returns></returns>
+        protected Process ReceiveCmd()
+        {
+            ProcessStartInfo cmdStartInfoRec = new ProcessStartInfo
+            {
+                //Subject to change
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas",
+                Arguments = "receive"
+            };
+
+            Process cmdProcessRec = new Process
+            {
+                StartInfo = cmdStartInfoRec
+            };
+            cmdProcessRec.EnableRaisingEvents = true;
+            cmdProcessRec.Start();
+            cmdProcessRec.BeginOutputReadLine();
+            cmdProcessRec.BeginErrorReadLine();
+
+            cmdProcessRec.StandardInput.Flush();
+
+            return cmdProcessRec;
+        }
+
+        /// <summary>
+        /// Triggers the background Process to recieve R script output
+        /// </summary>
+        /// <returns></returns>
+        protected Process ReceiveResponseCmd()
+        {
+            ProcessStartInfo cmdStartInfoRecResp = new ProcessStartInfo
+            {
+                //Subject to change
+                FileName = @"C:\Program Files\Halo\HaloMW\MessageConsole\Halo.ML.MessageConsole.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                Verb = "runas",
+                Arguments = "receiveresponse"
+            };
+
+            Process cmdProcessResp = new Process
+            {
+                StartInfo = cmdStartInfoRecResp
+            };
+            cmdProcessResp.EnableRaisingEvents = true;
+            cmdProcessResp.Start();
+            cmdProcessResp.BeginOutputReadLine();
+            cmdProcessResp.BeginErrorReadLine();
+
+            cmdProcessResp.StandardInput.Flush();
+
+            return cmdProcessResp;
+        }
+
+
 
         #endregion 
     }
