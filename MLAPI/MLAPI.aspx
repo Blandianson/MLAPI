@@ -31,10 +31,10 @@
 
             <div class="row"> <%--Forecast Type--%>   
                 <div class="col-sm-12">
-                    <asp:RadioButtonList id="forscastType" runat="server" AutoPostBack="true" onchange="javascript:additionalOptions('12345567, 234556)">
-                        <asp:ListItem Value="0"> Normal Forecast</asp:ListItem>
-                        <asp:ListItem Value="1" Selected="True"> Enable ADAR Cleansing</asp:ListItem>
-                        <asp:ListItem Value="2"> Enable ADAR Cleansing (with Holiday Consideration)</asp:ListItem>
+                    <asp:RadioButtonList id="forscastType" runat="server">
+                        <asp:ListItem Value="0" Selected="True" Text=" Enable ADAR Cleansing"></asp:ListItem>
+                        <asp:ListItem Value="1" Text=" Enable ADAR Cleansing (with Holiday Consideration)"></asp:ListItem>
+                        <asp:ListItem Value="2" Text=" Demo ADAR"></asp:ListItem>
                      </asp:RadioButtonList>
                 </div>
             </div>

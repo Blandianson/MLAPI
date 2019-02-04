@@ -150,22 +150,41 @@ namespace HaloBI.Prism.Plugin
         /// 
         protected void Request_click(object sender, EventArgs e)
         {
-            var context = GetContext(_contextId);
+            if (forscastType.SelectedIndex == 1)
+            {
+                inputData.Text = readOutput(@"demo\Holiday\full_base_data.csv");
+                cleanedData.Text = readOutput(@"demo\Holiday\full_cleaned_data.csv");
+                cleanForecast.Text = readOutput(@"demo\Holiday\output.csv");
+                actualForecast.Text = readOutput(@"demo\Holiday\output_actual.csv");
+                outputText.Text += readOutput(@"demo\Holiday\full_base_data.csv") + readOutput(@"demo\Holiday\output.csv");
+            }
+            else if (forscastType.SelectedIndex == 2)
+            {
+                inputData.Text = readOutput(@"demo\2019-02-05-1144\full_base_data.csv");
+                cleanedData.Text = readOutput(@"demo\2019-02-05-1144\full_cleaned_data.csv");
+                cleanForecast.Text = readOutput(@"demo\2019-02-05-1144\output.csv");
+                actualForecast.Text = readOutput(@"demo\2019-02-05-1144\output_actual.csv");
+                outputText.Text += readOutput(@"demo\2019-02-05-1144\full_base_data.csv") + readOutput(@"demo\2019-02-05-1144\output.csv");
+            }
+            else
+            {
+                var context = GetContext(_contextId);
 
-            var dataLayer = new DataLayer(context);
-            var timeSeriesDataTable = dataLayer.GetDataTable("002");
-            
+                var dataLayer = new DataLayer(context);
+                var timeSeriesDataTable = dataLayer.GetDataTable("002");
 
-            dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
-            dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
 
-            triggerADAR();
+                dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
+                dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
 
-            inputData.Text = readOutput("full_base_data.csv");
-            cleanedData.Text = readOutput("full_cleaned_data.csv");
-            cleanForecast.Text = readOutput("output.csv");
-            actualForecast.Text = readOutput("output_actual.csv");
-            outputText.Text += readOutput("full_base_data.csv") + readOutput("output.csv");
+                triggerADAR();
+
+                inputData.Text = readOutput("full_base_data.csv");
+                cleanedData.Text = readOutput("full_cleaned_data.csv");
+                cleanForecast.Text = readOutput("output.csv");
+                actualForecast.Text = readOutput("output_actual.csv");
+                outputText.Text += readOutput("full_base_data.csv") + readOutput("output.csv");
+            }
         }
 
         /// <summary>
