@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Data;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -306,8 +309,91 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessResp;
         }
 
+        #region Change COnfig
 
+        //protected String readConfig()
+        //{
+        //    string path = @"C:\Halo\ADAR\inputs and outputs\config.csv";
+        //    String outputLines = "";
 
-        #endregion 
+        //    StreamReader sr = File.OpenText(path);
+        //    string s;
+        //    while ((s = sr.ReadLine()) != null)
+        //    {
+        //        outputLines += s + "\n";
+        //    }
+        //    sr.Close();
+
+        //    var configData = configStrToDatTab(outputLines);
+        //    return outputLines;
+        //}
+
+        //protected DataTable configStrToDatTab(String confStr)
+        //{
+        //    String[] confArray = Regex.Split(confStr, "\n");
+        //    for (var i = 0; i < confArray.Length; i++)
+        //    {
+        //        var atrribData = Regex.Split(confArray[i], "\n");
+        //        if (confArray.Contains("DateEnd") | confArray.Contains("Period_End"))
+        //        {
+        //            var dataEnd = GetConfigFirstDataPt(false);
+        //            atrribData[1] = dataEnd;
+        //        }
+        //        if (confArray.Contains("DateStart") | confArray.Contains("Period_Start") | confArray.Contains("DsDate"))
+        //        {
+        //            var dataStart = GetConfigFirstDataPt(true);
+        //            atrribData[1] = dataStart;
+        //        }
+        //        if (confArray.Contains("PeriodsCount"))
+        //        {
+        //            var dataStart = GetConfigFirstDataPt(true);
+        //            atrribData[1] = dataStart;
+        //        }
+        //        if
+        //        // change to the confArray to include the altered row
+        //    }
+        //}
+
+        //protected String GetConfigFirstDataPt(Boolean startEnd) //true = startDate Returned, False = endDate Returned
+        //{
+        //    string path = @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv";
+        //    String outputLines = "";
+        //    var startDate = "";
+        //    var endDate = "";
+
+        //    StreamReader sr = File.OpenText(path);
+        //    string s;
+        //    while ((s = sr.ReadLine()) != null)
+        //    {
+        //        outputLines += s + "\n";
+        //    }
+        //    sr.Close();
+        //    String[] inputArray = Regex.Split(outputLines, "\n");
+        //    for (var i = 0; i < inputArray.Length; i++)
+        //    {
+        //        var inputRow = Regex.Split(inputArray[i], ",");
+        //        if (i == 2)
+        //        {
+        //            startDate = inputRow[1];
+        //        };
+        //        if (i == inputArray.Length)
+        //        {
+        //            endDate = inputRow[1];
+        //        }
+        //    }
+
+        //    if (startEnd)
+        //    {
+        //        return startDate;
+        //    }
+        //    else
+        //    {
+        //        return endDate;
+        //    }
+        //}
+
+        #endregion
+
+        #endregion
     }
 }

@@ -21,15 +21,6 @@
 
         <div id="wrapperForm" class="container">
 
-            <div class="row"> <%--Column & Points--%>
-                <div class="col-sm-6"><asp:Label runat="server" ID="colNum" CssClass="fieldLabel">Column Number of Time Series Data <span class="required">*</span></asp:Label>
-                <asp:TextBox ID="column" runat="server" cssClass="field-long" type="number" value="2"></asp:TextBox></div>
-
-                <div class="col-sm-6"><asp:Label runat="server" ID="forecastRange" CssClass="fieldLabel">Number of Future Time Series Points <span class="required">*</span></asp:Label>
-                <asp:TextBox ID="forecast" runat="server" cssClass="field-long" type="number" value="20" ></asp:TextBox></div>
-            </div>
-
-                
             <div class="row"> <%--IO--%>                
                 <div class="col-sm-12">
                     <div class="header" ><asp:Label runat="server" ID="outputResultLabel" CssClass="fieldLabel">Forecasted Results</asp:Label></div>

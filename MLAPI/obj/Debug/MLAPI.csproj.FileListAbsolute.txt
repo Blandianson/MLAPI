@@ -70,3 +70,5 @@ C:\Users\Nicole.jackson\source\repos\MLAPI\bin\CsvHelper.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\System.ValueTuple.dll
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\CsvHelper.xml
 C:\Users\Nicole.jackson\source\repos\MLAPI\bin\System.ValueTuple.xml
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\GenericParsing.dll
+C:\Users\Nicole.jackson\source\repos\MLAPI\bin\GenericParsing.xml
