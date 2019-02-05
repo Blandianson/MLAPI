@@ -53,14 +53,14 @@ namespace HaloBI.Prism.Plugin
 
             dataStr.AppendLine(headerStr);
 
-            var maxADAR = dt.Rows.Count - 30;
+            var maxADAR = dt.Rows.Count - 60;
             for (var i = 0; i < maxADAR; i++)
             {
                 DataRow r = dt.Rows[i];
                 data += "1,1," + r["name"] + "," + r["col0"] + "\n";
             }
             dataStr.Append(data);
-            File.WriteAllText(filePath, dataStr.ToString());
+            //File.WriteAllText(filePath, dataStr.ToString());
 
         }
 

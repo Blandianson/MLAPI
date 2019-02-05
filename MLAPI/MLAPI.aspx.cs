@@ -150,7 +150,7 @@ namespace HaloBI.Prism.Plugin
         /// 
         protected void Request_click(object sender, EventArgs e)
         {
-            if (forscastType.SelectedIndex == 1)
+            if (forscastType.SelectedIndex == 1) // Holiday Oversampling
             {
                 inputData.Text = readOutput(@"demo\Holiday\full_base_data.csv");
                 cleanedData.Text = readOutput(@"demo\Holiday\full_cleaned_data.csv");
@@ -158,13 +158,21 @@ namespace HaloBI.Prism.Plugin
                 actualForecast.Text = readOutput(@"demo\Holiday\output_actual.csv");
                 outputText.Text += readOutput(@"demo\Holiday\full_base_data.csv") + readOutput(@"demo\Holiday\output.csv");
             }
-            else if (forscastType.SelectedIndex == 2)
+            else if (forscastType.SelectedIndex == 2) // Demo Mode
             {
                 inputData.Text = readOutput(@"demo\2019-02-05-1144\full_base_data.csv");
                 cleanedData.Text = readOutput(@"demo\2019-02-05-1144\full_cleaned_data.csv");
                 cleanForecast.Text = readOutput(@"demo\2019-02-05-1144\output.csv");
                 actualForecast.Text = readOutput(@"demo\2019-02-05-1144\output_actual.csv");
                 outputText.Text += readOutput(@"demo\2019-02-05-1144\full_base_data.csv") + readOutput(@"demo\2019-02-05-1144\output.csv");
+            }
+            else if (forscastType.SelectedIndex == 3) // Demo Mode
+            {
+                inputData.Text = readOutput(@"demo\twoMonthADAR\full_base_data.csv");
+                cleanedData.Text = readOutput(@"demo\twoMonthADAR\full_cleaned_data.csv");
+                cleanForecast.Text = readOutput(@"demo\twoMonthADAR\output.csv");
+                actualForecast.Text = readOutput(@"demo\twoMonthADAR\output_actual.csv");
+                outputText.Text += readOutput(@"demo\twoMonthADAR\full_base_data.csv") + readOutput(@"demo\twoMonthADAR\output.csv");
             }
             else
             {
@@ -330,86 +338,98 @@ namespace HaloBI.Prism.Plugin
 
         #region Change COnfig
 
-        //protected String readConfig()
-        //{
-        //    string path = @"C:\Halo\ADAR\inputs and outputs\config.csv";
-        //    String outputLines = "";
+        protected String readConfig()
+        {
+            string path = @"C:\Halo\ADAR\inputs and outputs\config.csv";
+            String outputLines = "";
 
-        //    StreamReader sr = File.OpenText(path);
-        //    string s;
-        //    while ((s = sr.ReadLine()) != null)
-        //    {
-        //        outputLines += s + "\n";
-        //    }
-        //    sr.Close();
+            StreamReader sr = File.OpenText(path);
+            string s;
+            while ((s = sr.ReadLine()) != null)
+            {
+                outputLines += s + "\n";
+            }
+            sr.Close();
 
-        //    var configData = configStrToDatTab(outputLines);
-        //    return outputLines;
-        //}
+            var configData = configStrToDatTab(outputLines);
+            return outputLines;
+        }
 
-        //protected DataTable configStrToDatTab(String confStr)
-        //{
-        //    String[] confArray = Regex.Split(confStr, "\n");
-        //    for (var i = 0; i < confArray.Length; i++)
-        //    {
-        //        var atrribData = Regex.Split(confArray[i], "\n");
-        //        if (confArray.Contains("DateEnd") | confArray.Contains("Period_End"))
-        //        {
-        //            var dataEnd = GetConfigFirstDataPt(false);
-        //            atrribData[1] = dataEnd;
-        //        }
-        //        if (confArray.Contains("DateStart") | confArray.Contains("Period_Start") | confArray.Contains("DsDate"))
-        //        {
-        //            var dataStart = GetConfigFirstDataPt(true);
-        //            atrribData[1] = dataStart;
-        //        }
-        //        if (confArray.Contains("PeriodsCount"))
-        //        {
-        //            var dataStart = GetConfigFirstDataPt(true);
-        //            atrribData[1] = dataStart;
-        //        }
-        //        if
-        //        // change to the confArray to include the altered row
-        //    }
-        //}
+        protected String configStrToDatTab(String confStr)
+        {
+            String[] confArray = Regex.Split(confStr, "\n");
+            for (var i = 0; i < confArray.Length; i++)
+            {
+                var atrribData = Regex.Split(confArray[i], "\n");
+                if (confArray[i].Contains("DateEnd") | confArray.Contains("Period_End"))
+                {
+                    var dataEnd = GetConfigFirstDataPt(false);
+                    atrribData[1] = dataEnd;
+                }
+                if (confArray[i].Contains("DateStart") | confArray.Contains("Period_Start") | confArray.Contains("DsDate"))
+                {
+                    var dataStart = GetConfigFirstDataPt(true);
+                    atrribData[1] = dataStart;
+                }
+                if (confArray[i].Contains("PeriodsCount"))
+                {
+                    atrribData[1] = "31";
+                }
+                if (confArray[i].Contains("RunAnomalyDetectionOnly"))
+                {
+                    atrribData[1] = "1";
+                }
+                if (confArray[i].Contains("RunAnomalyDetectionWithHolidayOversampling"))
+                {
+                    atrribData[1] = "0";
+                }
+                if (confArray[i].Contains("ValidationStart"))
+                {
+                    var dataEnd = GetConfigFirstDataPt(false);
+                    atrribData[1] = dataEnd.Substring(0, 4) + "/" + dataEnd.Substring(4, 6) + "/" + dataEnd.Substring(6);
+                }
+                // change to the confArray to include the altered row
+            }
+            return "";
+        }
 
-        //protected String GetConfigFirstDataPt(Boolean startEnd) //true = startDate Returned, False = endDate Returned
-        //{
-        //    string path = @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv";
-        //    String outputLines = "";
-        //    var startDate = "";
-        //    var endDate = "";
+        protected String GetConfigFirstDataPt(Boolean startEnd) //true = startDate Returned, False = endDate Returned
+        {
+            string path = @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv";
+            String outputLines = "";
+            var startDate = "";
+            var endDate = "";
 
-        //    StreamReader sr = File.OpenText(path);
-        //    string s;
-        //    while ((s = sr.ReadLine()) != null)
-        //    {
-        //        outputLines += s + "\n";
-        //    }
-        //    sr.Close();
-        //    String[] inputArray = Regex.Split(outputLines, "\n");
-        //    for (var i = 0; i < inputArray.Length; i++)
-        //    {
-        //        var inputRow = Regex.Split(inputArray[i], ",");
-        //        if (i == 2)
-        //        {
-        //            startDate = inputRow[1];
-        //        };
-        //        if (i == inputArray.Length)
-        //        {
-        //            endDate = inputRow[1];
-        //        }
-        //    }
+            StreamReader sr = File.OpenText(path);
+            string s;
+            while ((s = sr.ReadLine()) != null)
+            {
+                outputLines += s + "\n";
+            }
+            sr.Close();
+            String[] inputArray = Regex.Split(outputLines, "\n");
+            for (var i = 0; i < inputArray.Length; i++)
+            {
+                var inputRow = Regex.Split(inputArray[i], ",");
+                if (i == 2)
+                {
+                    startDate = inputRow[1];
+                };
+                if (i == inputArray.Length)
+                {
+                    endDate = inputRow[1];
+                }
+            }
 
-        //    if (startEnd)
-        //    {
-        //        return startDate;
-        //    }
-        //    else
-        //    {
-        //        return endDate;
-        //    }
-        //}
+            if (startEnd)
+            {
+                return startDate;
+            }
+            else
+            {
+                return endDate;
+            }
+        }
 
         #endregion
 

@@ -35,6 +35,8 @@
                         <asp:ListItem Value="0" Selected="True" Text=" Enable ADAR Cleansing"></asp:ListItem>
                         <asp:ListItem Value="1" Text=" Enable ADAR Cleansing (with Holiday Consideration)"></asp:ListItem>
                         <asp:ListItem Value="2" Text=" Demo ADAR"></asp:ListItem>
+                        <asp:ListItem Value="3" Text=" Demo ADAR 2 Months"></asp:ListItem>
+                        <asp:ListItem Value="3" Text=" Demo ADAR Cleansing (with Holiday Consideration) 2 Months"></asp:ListItem>
                      </asp:RadioButtonList>
                 </div>
             </div>
