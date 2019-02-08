@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 
 namespace HaloBI.Prism.Plugin
 {
@@ -174,6 +176,15 @@ namespace HaloBI.Prism.Plugin
                 actualForecast.Text = readOutput(@"demo\twoMonthADAR\output_actual.csv");
                 outputText.Text += readOutput(@"demo\twoMonthADAR\full_base_data.csv") + readOutput(@"demo\twoMonthADAR\output.csv");
             }
+            else if (forscastType.SelectedIndex == 4) // Demo Mode
+            {
+                outputText.Text += "Holiday Data:";
+                inputData.Text = readOutput(@"demo\twoMonthHoliday\full_base_data.csv");
+                cleanedData.Text = readOutput(@"demo\twoMonthHoliday\full_cleaned_data.csv");
+                cleanForecast.Text = readOutput(@"demo\twoMonthHoliday\output.csv");
+                actualForecast.Text = readOutput(@"demo\twoMonthHoliday\output_holiday.csv");
+                outputText.Text += readOutput(@"demo\twoMonthHoliday\full_base_data.csv") + readOutput(@"demo\twoMonthHoliday\output.csv");
+            }
             else
             {
                 var context = GetContext(_contextId);
@@ -192,6 +203,9 @@ namespace HaloBI.Prism.Plugin
                 cleanForecast.Text = readOutput("output.csv");
                 actualForecast.Text = readOutput("output_actual.csv");
                 outputText.Text += readOutput("full_base_data.csv") + readOutput("output.csv");
+
+                List<List<string>> newConfig = readConfig();
+                writeConfig(newConfig);
             }
         }
 
@@ -336,63 +350,154 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessResp;
         }
 
-        #region Change COnfig
+        #region Change Config
 
-        protected String readConfig()
+        /// <summary>
+        /// Reads in the config data from file
+        /// </summary>
+        /// <returns></returns>
+        protected List<List<string>> readConfig()
         {
-            string path = @"C:\Halo\ADAR\inputs and outputs\config.csv";
-            String outputLines = "";
+            string path = @"C:\Halo\ADAR\inputs and outputs\demo\Holiday\config.csv";
+            List<List<string>> outputLines = new List<List<string>>();
 
             StreamReader sr = File.OpenText(path);
             string s;
             while ((s = sr.ReadLine()) != null)
             {
-                outputLines += s + "\n";
+                var elements = s.Split(',');
+                List<string> innerList = new List<string>
+                {
+                    elements[0], elements[1]
+                };
+                outputLines.Add(innerList);
             }
             sr.Close();
 
-            var configData = configStrToDatTab(outputLines);
+            //Output Each Line of the inner Array
+            //foreach (var sublist in outputLines)
+            //{
+            //    outputText.Text += String.Join(", ", sublist) + "\n";
+            //}
+
+            //Output Each element of the inner Array
+            //foreach (var sublist in outputLines)
+            //{
+            //    foreach (var element in sublist)
+            //    {
+            //        outputText.Text += element + "\n";
+
+            //    }
+            //}
+            List<List<string>> configData = configStrToDatTab(outputLines);
             return outputLines;
         }
 
-        protected String configStrToDatTab(String confStr)
+        /// <summary>
+        /// Takes config data and alters Date and ADAR options
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        protected List<List<string>> configStrToDatTab(List<List<string>> config)
         {
-            String[] confArray = Regex.Split(confStr, "\n");
-            for (var i = 0; i < confArray.Length; i++)
+
+            int firstPeriodsCount = 0;
+
+            //Getting the first occurence of the PeriodsCount
+            for (var i = 0; i < config.Count(); i++)
             {
-                var atrribData = Regex.Split(confArray[i], "\n");
-                if (confArray[i].Contains("DateEnd") | confArray.Contains("Period_End"))
+                if ( config[i][0] == "PeriodsCount")
+                {
+                    firstPeriodsCount = i;
+                }
+                
+            }
+            //Before Config change
+            //foreach (var sublist in config)
+            //{
+            //    outputText.Text += "Config (Original): " + String.Join(", ", sublist) + "\n"; //Changed Array
+            //}
+
+
+            for (var i = 0; i < config.Count(); i++)
+            {
+                List<string> atrribData = new List<string>();
+                var confArray = config[i][0];
+
+                if (confArray.Contains("DateEnd") | confArray.Contains("Period_End"))
                 {
                     var dataEnd = GetConfigFirstDataPt(false);
-                    atrribData[1] = dataEnd;
+                    var formattedDate = DateFormat(dataEnd);
+                    atrribData.Add(confArray);
+                    atrribData.Add(formattedDate);
+                    config[i] = atrribData;
                 }
-                if (confArray[i].Contains("DateStart") | confArray.Contains("Period_Start") | confArray.Contains("DsDate"))
+                if (confArray.Contains("DateStart") | confArray.Contains("Period_Start") | confArray.Contains("DsDate"))
                 {
                     var dataStart = GetConfigFirstDataPt(true);
-                    atrribData[1] = dataStart;
+                    var formattedDate = DateFormat(dataStart);
+                    atrribData.Add(confArray);
+                    atrribData.Add(formattedDate);
+                    config[i] = atrribData;
                 }
-                if (confArray[i].Contains("PeriodsCount"))
+                if (i == firstPeriodsCount)  //Changes an additional setting with the same name ((config).IndexOf("PeriodsCount"))
                 {
-                    atrribData[1] = "31";
+                    atrribData.Add("PeriodsCount");
+                    atrribData.Add("60");
+                    config[i] = atrribData;
                 }
-                if (confArray[i].Contains("RunAnomalyDetectionOnly"))
+                if (confArray.Contains("RunAnomalyDetectionOnly"))
                 {
-                    atrribData[1] = "1";
+                    atrribData.Add("RunAnomalyDetectionOnly");
+                    atrribData.Add("1");
+                    config[i] = atrribData;
                 }
-                if (confArray[i].Contains("RunAnomalyDetectionWithHolidayOversampling"))
+                if (confArray.Contains("RunAnomalyDetectionWithHolidayOversampling"))
                 {
-                    atrribData[1] = "0";
+                    atrribData.Add("RunAnomalyDetectionWithHolidayOversampling");
+                    atrribData.Add("0");
+                    config[i] = atrribData;
                 }
-                if (confArray[i].Contains("ValidationStart"))
+                if (confArray.Contains("ValidationStart"))
                 {
                     var dataEnd = GetConfigFirstDataPt(false);
-                    atrribData[1] = dataEnd.Substring(0, 4) + "/" + dataEnd.Substring(4, 6) + "/" + dataEnd.Substring(6);
+                    var formattedDate = new DateTime(int.Parse(dataEnd.Substring(0, 4)), int.Parse(dataEnd.Substring(4, 2)), int.Parse(dataEnd.Substring(6)));
+                    atrribData.Add("ValidationStart");
+                    atrribData.Add(formattedDate.AddDays(-1).ToString("MM/dd/yyyy"));
+                    config[i] = atrribData;
                 }
-                // change to the confArray to include the altered row
             }
-            return "";
+
+            //After Config Change
+            //foreach (var sublist in config)
+            //{
+            //    outputText.Text += "Config (Changed): " + String.Join(", ", sublist) + "\n"; //Changed Array
+            //}
+            return config;
         }
 
+        /// <summary>
+        /// changes date format from yyyymmdd to mm/dd/yyyy
+        /// </summary>
+        /// <param name="ddmmyyy"></param>
+        /// <returns></returns>
+        protected String DateFormat(String ddmmyyy)
+        {
+            if (ddmmyyy.Substring(4, 1) != "0") // two digit month number
+            {
+                return ddmmyyy.Substring(4, 2) + "/" + ddmmyyy.Substring(6) + "/" + ddmmyyy.Substring(0, 4);
+            }
+            else //one digit month number
+            {
+                return ddmmyyy.Substring(5, 1) + "/" + ddmmyyy.Substring(6) + "/" + ddmmyyy.Substring(0, 4);
+            }
+        }
+
+        /// <summary>
+        /// reads in the input_to_ADAR and gets the first and last date of the data
+        /// </summary>
+        /// <param name="startEnd"></param>
+        /// <returns></returns>
         protected String GetConfigFirstDataPt(Boolean startEnd) //true = startDate Returned, False = endDate Returned
         {
             string path = @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv";
@@ -407,17 +512,20 @@ namespace HaloBI.Prism.Plugin
                 outputLines += s + "\n";
             }
             sr.Close();
+
+            endDate += outputLines;
+
             String[] inputArray = Regex.Split(outputLines, "\n");
             for (var i = 0; i < inputArray.Length; i++)
             {
                 var inputRow = Regex.Split(inputArray[i], ",");
-                if (i == 2)
+                if (i == 1)
                 {
-                    startDate = inputRow[1];
+                    startDate = inputRow[2];
                 };
-                if (i == inputArray.Length)
+                if (i == inputArray.Length-2)
                 {
-                    endDate = inputRow[1];
+                    endDate = inputRow[2];
                 }
             }
 
@@ -427,8 +535,25 @@ namespace HaloBI.Prism.Plugin
             }
             else
             {
-                return endDate;
+                return endDate;//String.Join("\n ", inputArray[inputArray.Length-2].ToArray());//[inputArray.Length -1]; String.Join("\n ", inputArray.ToArray())
             }
+        }
+
+        /// <summary>
+        /// overwrites the config
+        /// </summary>
+        private void writeConfig(List<List<string>> newConfig)
+        {
+            var filePath = @"C:\Halo\ADAR\inputs and outputs\config.csv";
+            String configLine = "";
+            StringBuilder sb = new StringBuilder();
+            
+            for (var i = 0; i < newConfig.Count(); i++)
+            {
+                configLine += String.Join(",", newConfig[i]) + "\n";
+            }
+            sb.Append(configLine);
+            File.WriteAllText(filePath, sb.ToString());
         }
 
         #endregion

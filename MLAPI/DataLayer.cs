@@ -60,7 +60,7 @@ namespace HaloBI.Prism.Plugin
                 data += "1,1," + r["name"] + "," + r["col0"] + "\n";
             }
             dataStr.Append(data);
-            //File.WriteAllText(filePath, dataStr.ToString());
+            File.WriteAllText(filePath, dataStr.ToString());
 
         }
 
