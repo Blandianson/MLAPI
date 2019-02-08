@@ -152,61 +152,62 @@ namespace HaloBI.Prism.Plugin
         /// 
         protected void Request_click(object sender, EventArgs e)
         {
-            if (forscastType.SelectedIndex == 1) // Holiday Oversampling
+            var context = GetContext(_contextId);
+
+            var dataLayer = new DataLayer(context);
+            var timeSeriesDataTable = dataLayer.GetDataTable("002");
+
+
+            dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
+            dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
+
+            List<List<string>> newConfig = readConfig();
+            writeConfig(newConfig);
+            triggerADAR();
+
+            getOtherSeries();
+            triggerADAR();
+            getCleanedHistory();
+            forscastType.SelectedIndex = 1;
+            newConfig = readConfig();
+            writeConfig(newConfig);
+            triggerADAR();
+
+            Thread.Sleep(25000); //Update Time: 25000
+            //File.Copy(@"C:\Halo\ADAR\inputs and outputs\output.csv", @"C:\Halo\ADAR\inputs and outputs\baseForecast.csv", true);
+
+
+            Thread.Sleep(25000); //Update Time: 25000
+
+
+            inputData.Text = readOutput(@"longBaseHistory.csv");
+            cleanedData.Text = readOutput(@"cleaned_data.csv");
+            cleanForecast.Text = readOutput(@"cleanedForecast.csv");
+            actualForecast.Text = readOutput(@"output.csv");
+
+        }
+
+
+        private void getCleanedHistory()
+        {
+            System.IO.File.Move(@"C:\Halo\ADAR\inputs and outputs\cleaned_data.csv", @"C:\Halo\ADAR\inputs and outputs\cleaned_data.csv");
+        }
+
+        private void getOtherSeries()
+        {
+            File.Delete("longBaseHistory.csv");
+            File.Delete("cleaned_data.csv");
+            File.Delete("cleanedForecast.csv");
+            File.Delete("output.csv");
+
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\full_base_data.csv", @"C:\Halo\ADAR\inputs and outputs\longBaseHistory.csv", true);
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\output.csv", @"C:\Halo\ADAR\inputs and outputs\cleanedForecast.csv", true);
+
+            if (File.Exists(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv"))
             {
-                inputData.Text = readOutput(@"demo\Holiday\full_base_data.csv");
-                cleanedData.Text = readOutput(@"demo\Holiday\full_cleaned_data.csv");
-                cleanForecast.Text = readOutput(@"demo\Holiday\output.csv");
-                actualForecast.Text = readOutput(@"demo\Holiday\output_actual.csv");
-                outputText.Text += readOutput(@"demo\Holiday\full_base_data.csv") + readOutput(@"demo\Holiday\output.csv");
+                File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", true);
             }
-            else if (forscastType.SelectedIndex == 2) // Demo Mode
-            {
-                inputData.Text = readOutput(@"demo\2019-02-05-1144\full_base_data.csv");
-                cleanedData.Text = readOutput(@"demo\2019-02-05-1144\full_cleaned_data.csv");
-                cleanForecast.Text = readOutput(@"demo\2019-02-05-1144\output.csv");
-                actualForecast.Text = readOutput(@"demo\2019-02-05-1144\output_actual.csv");
-                outputText.Text += readOutput(@"demo\2019-02-05-1144\full_base_data.csv") + readOutput(@"demo\2019-02-05-1144\output.csv");
-            }
-            else if (forscastType.SelectedIndex == 3) // Demo Mode
-            {
-                inputData.Text = readOutput(@"demo\twoMonthADAR\full_base_data.csv");
-                cleanedData.Text = readOutput(@"demo\twoMonthADAR\full_cleaned_data.csv");
-                cleanForecast.Text = readOutput(@"demo\twoMonthADAR\output.csv");
-                actualForecast.Text = readOutput(@"demo\twoMonthADAR\output_actual.csv");
-                outputText.Text += readOutput(@"demo\twoMonthADAR\full_base_data.csv") + readOutput(@"demo\twoMonthADAR\output.csv");
-            }
-            else if (forscastType.SelectedIndex == 4) // Demo Mode
-            {
-                outputText.Text += "Holiday Data:";
-                inputData.Text = readOutput(@"demo\twoMonthHoliday\full_base_data.csv");
-                cleanedData.Text = readOutput(@"demo\twoMonthHoliday\full_cleaned_data.csv");
-                cleanForecast.Text = readOutput(@"demo\twoMonthHoliday\output.csv");
-                actualForecast.Text = readOutput(@"demo\twoMonthHoliday\output_holiday.csv");
-                outputText.Text += readOutput(@"demo\twoMonthHoliday\full_base_data.csv") + readOutput(@"demo\twoMonthHoliday\output.csv");
-            }
-            else
-            {
-                var context = GetContext(_contextId);
-
-                var dataLayer = new DataLayer(context);
-                var timeSeriesDataTable = dataLayer.GetDataTable("002");
-
-
-                dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
-                dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
-
-                triggerADAR();
-
-                inputData.Text = readOutput("full_base_data.csv");
-                cleanedData.Text = readOutput("full_cleaned_data.csv");
-                cleanForecast.Text = readOutput("output.csv");
-                actualForecast.Text = readOutput("output_actual.csv");
-                outputText.Text += readOutput("full_base_data.csv") + readOutput("output.csv");
-
-                List<List<string>> newConfig = readConfig();
-                writeConfig(newConfig);
-            }
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\full_base_data.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", true);
         }
 
         /// <summary>
@@ -358,7 +359,7 @@ namespace HaloBI.Prism.Plugin
         /// <returns></returns>
         protected List<List<string>> readConfig()
         {
-            string path = @"C:\Halo\ADAR\inputs and outputs\demo\Holiday\config.csv";
+            string path = @"C:\Halo\ADAR\inputs and outputs\config.csv";
             List<List<string>> outputLines = new List<List<string>>();
 
             StreamReader sr = File.OpenText(path);
@@ -400,24 +401,15 @@ namespace HaloBI.Prism.Plugin
         /// <returns></returns>
         protected List<List<string>> configStrToDatTab(List<List<string>> config)
         {
-
-            int firstPeriodsCount = 0;
-
             //Getting the first occurence of the PeriodsCount
+            int firstPeriodsCount = 0;
             for (var i = 0; i < config.Count(); i++)
             {
                 if ( config[i][0] == "PeriodsCount")
                 {
                     firstPeriodsCount = i;
                 }
-                
             }
-            //Before Config change
-            //foreach (var sublist in config)
-            //{
-            //    outputText.Text += "Config (Original): " + String.Join(", ", sublist) + "\n"; //Changed Array
-            //}
-
 
             for (var i = 0; i < config.Count(); i++)
             {
@@ -448,15 +440,33 @@ namespace HaloBI.Prism.Plugin
                 }
                 if (confArray.Contains("RunAnomalyDetectionOnly"))
                 {
-                    atrribData.Add("RunAnomalyDetectionOnly");
-                    atrribData.Add("1");
-                    config[i] = atrribData;
+                    if (forscastType.SelectedIndex == 1) //ADAR is selected
+                    {
+                        atrribData.Add("RunAnomalyDetectionOnly"); 
+                        atrribData.Add("1");
+                        config[i] = atrribData;
+                    }
+                    else //Holiday Overamping is selected
+                    {
+                        atrribData.Add("RunAnomalyDetectionOnly");
+                        atrribData.Add("0");
+                        config[i] = atrribData;
+                    }
                 }
                 if (confArray.Contains("RunAnomalyDetectionWithHolidayOversampling"))
                 {
-                    atrribData.Add("RunAnomalyDetectionWithHolidayOversampling");
-                    atrribData.Add("0");
-                    config[i] = atrribData;
+                    if (forscastType.SelectedIndex == 2) //Holiday Oversampling is selected
+                    {
+                        atrribData.Add("RunAnomalyDetectionWithHolidayOversampling");
+                        atrribData.Add("1");
+                        config[i] = atrribData;
+                    }
+                    else //ADAR is selected
+                    {
+                        atrribData.Add("RunAnomalyDetectionWithHolidayOversampling");
+                        atrribData.Add("0");
+                        config[i] = atrribData;
+                    }
                 }
                 if (confArray.Contains("ValidationStart"))
                 {
