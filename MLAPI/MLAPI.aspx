@@ -45,24 +45,29 @@
             </div>
 
 
-            <div class="row" style="display:none"> <%--Input Test--%>
+            <div class="row" style="display:none"> <%--Base--%>
                 <div class="col-sm-12"><asp:Label runat="server" ID="inpt" CssClass="fieldLabel">Input</asp:Label>
                 <asp:TextBox ID="inputData" runat="server" cssClass="field-long" type="text" TextMode="MultiLine" onCl></asp:TextBox></div>
             </div>
 
-            <div class="row" style="display:none"> <%--Cleaned Test--%>
+            <div class="row" style="display:none"> <%--Cleaned--%>
                 <div class="col-sm-12"><asp:Label runat="server" ID="clnd" CssClass="fieldLabel">Cleaned</asp:Label>
                 <asp:TextBox ID="cleanedData" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
             </div>
 
-            <div class="row" style="display:none"> <%--Forecast Test--%>
-                <div class="col-sm-12"><asp:Label runat="server" ID="clnfrcst" CssClass="fieldLabel">Forecast</asp:Label>
+            <div class="row" style="display:none"> <%--ADAR Forecast--%>
+                <div class="col-sm-12"><asp:Label runat="server" ID="clnfrcst" CssClass="fieldLabel">ADAR Forecast</asp:Label>
                 <asp:TextBox ID="cleanForecast" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
             </div>
 
-            <div class="row" style="display:none"> <%--Forecast Test--%>
-                <div class="col-sm-12"><asp:Label runat="server" ID="actlfrcst" CssClass="fieldLabel">Forecast</asp:Label>
+            <div class="row" style="display:none"> <%--HaloBoost Forecast--%>
+                <div class="col-sm-12"><asp:Label runat="server" ID="actlfrcst" CssClass="fieldLabel">HaloBoost Forecast</asp:Label>
                 <asp:TextBox ID="actualForecast" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
+            </div>
+
+            <div class="row" style="display:none"> <%--Holiday Forecast--%>
+                <div class="col-sm-12"><asp:Label runat="server" ID="hldyfrcst" CssClass="fieldLabel">Holiday Forecast</asp:Label>
+                <asp:TextBox ID="holidayForecast" runat="server" cssClass="field-long" type="text" TextMode="MultiLine"></asp:TextBox></div>
             </div>
         </div>
     </form>

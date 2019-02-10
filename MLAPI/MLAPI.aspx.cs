@@ -163,50 +163,101 @@ namespace HaloBI.Prism.Plugin
 
             List<List<string>> newConfig = readConfig();
             writeConfig(newConfig);
-            triggerADAR();
+            
+            changeFilename("full_base_data", "longBaseHistory");
+            
+            //if (forscastType.SelectedIndex == 1)
+            //{
 
-            getOtherSeries();
-            triggerADAR();
-            getCleanedHistory();
-            forscastType.SelectedIndex = 1;
-            newConfig = readConfig();
-            writeConfig(newConfig);
-            triggerADAR();
+                //get cleanedHistory
+                getCleanedHistory();
+                newConfig = readConfig();
+                writeConfig(newConfig);
+                Thread.Sleep(100); //Update Time: 100
+                triggerADAR();
+                Thread.Sleep(25000); //Update Time: 25000
+                changeFilename("cleaned_data", "cleanedHistory");
+                Thread.Sleep(100); //Update Time: 100
 
-            Thread.Sleep(25000); //Update Time: 25000
-            //File.Copy(@"C:\Halo\ADAR\inputs and outputs\output.csv", @"C:\Halo\ADAR\inputs and outputs\baseForecast.csv", true);
+                //get cleanedForecast
+                getCleanedForecast();
+                newConfig = readConfig();
+                writeConfig(newConfig);
+                triggerADAR();
+                Thread.Sleep(25000); //Update Time: 25000
+                changeFilename("output", "cleanedForecast");
+                Thread.Sleep(100); //Update Time: 100
+
+                //get baseForecast
+                forscastType.SelectedIndex = 0;
+                newConfig = readConfig();
+                writeConfig(newConfig);
+                triggerADAR();
+                Thread.Sleep(25000); //Update Time: 25000
+                changeFilename("output", "baseForecast");
+                Thread.Sleep(100); //Update Time: 100
 
 
-            Thread.Sleep(25000); //Update Time: 25000
+                inputData.Text = readOutput(@"longBaseHistory.csv");
+                cleanedData.Text = readOutput(@"cleanedHistory.csv");
+                cleanForecast.Text = readOutput(@"cleanedForecast.csv");
+                actualForecast.Text = readOutput(@"baseForecast.csv");
+            //}
+            //if (forscastType.SelectedIndex == 2)
+            //{
+            //    //get cleanedForecast
+            //    forscastType.SelectedIndex = 1;
+            //    newConfig = readConfig();
+            //    writeConfig(newConfig);
+            //    triggerADAR();
+            //    Thread.Sleep(25000); //Update Time: 25000
+            //    changeFilename("output", "cleanedForecast");
+            //    Thread.Sleep(100); //Update Time: 100
 
 
-            inputData.Text = readOutput(@"longBaseHistory.csv");
-            cleanedData.Text = readOutput(@"cleaned_data.csv");
-            cleanForecast.Text = readOutput(@"cleanedForecast.csv");
-            actualForecast.Text = readOutput(@"output.csv");
+            //    //get holidayForecast
+            //    forscastType.SelectedIndex = 2;
+            //    newConfig = readConfig();
+            //    writeConfig(newConfig);
+            //    triggerADAR();
+            //    Thread.Sleep(25000); //Update Time: 25000
+            //    changeFilename("output", "holidayForecast");
+            //    Thread.Sleep(100); //Update Time: 100
+
+            //    inputData.Text = readOutput(@"longBaseHistory.csv");
+            //    cleanForecast.Text = readOutput(@"cleanedForecast.csv");
+            //    holidayForecast.Text = readOutput(@"holidayForecast.csv");
+            //}
 
         }
 
+        private void changeFilename(String inital, String changed)
+        {
+            File.Delete(@"C:\Halo\ADAR\inputs and outputs\" + changed + ".csv");
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\" + inital + ".csv", @"C:\Halo\ADAR\inputs and outputs\" + changed + ".csv", true);
+        }
+
+        private void getCleanedForecast()
+        {
+            //Returns the the cleaned forecast after running
+            File.Delete("input_to_ADAR.csv");
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", true);
+        }
 
         private void getCleanedHistory()
         {
-            System.IO.File.Move(@"C:\Halo\ADAR\inputs and outputs\cleaned_data.csv", @"C:\Halo\ADAR\inputs and outputs\cleaned_data.csv");
-        }
-
-        private void getOtherSeries()
-        {
-            File.Delete("longBaseHistory.csv");
-            File.Delete("cleaned_data.csv");
-            File.Delete("cleanedForecast.csv");
+            File.Delete(@"longBaseHistory.csv");
+            File.Delete(@"cleanedHistory.csv");
+            File.Delete(@"cleanedForecast.csv");
+            File.Delete(@"baseForecast.csv");
+            File.Delete("input_to_ADAR.csv");
+            File.Delete(@"full_base_data.csv");
+            File.Delete(@"input_to_ADAR_temp.csv");
             File.Delete("output.csv");
 
-            File.Copy(@"C:\Halo\ADAR\inputs and outputs\full_base_data.csv", @"C:\Halo\ADAR\inputs and outputs\longBaseHistory.csv", true);
-            File.Copy(@"C:\Halo\ADAR\inputs and outputs\output.csv", @"C:\Halo\ADAR\inputs and outputs\cleanedForecast.csv", true);
 
-            if (File.Exists(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv"))
-            {
-                File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", true);
-            }
+            //Returns the Cleaned History after running
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", true);
             File.Copy(@"C:\Halo\ADAR\inputs and outputs\full_base_data.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", true);
         }
 

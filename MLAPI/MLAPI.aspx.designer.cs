@@ -128,5 +128,23 @@ namespace HaloBI.Prism.Plugin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox actualForecast;
+        
+        /// <summary>
+        /// hldyfrcst control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label hldyfrcst;
+        
+        /// <summary>
+        /// holidayForecast control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox holidayForecast;
     }
 }
