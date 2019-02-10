@@ -166,68 +166,38 @@ namespace HaloBI.Prism.Plugin
             
             changeFilename("full_base_data", "longBaseHistory");
             
-            //if (forscastType.SelectedIndex == 1)
-            //{
+            //get cleanedHistory
+            getCleanedHistory();
+            newConfig = readConfig();
+            writeConfig(newConfig);
+            Thread.Sleep(100); //Update Time: 100
+            triggerADAR();
+            Thread.Sleep(25000); //Update Time: 25000
+            changeFilename("cleaned_data", "cleanedHistory");
+            Thread.Sleep(100); //Update Time: 100
 
-                //get cleanedHistory
-                getCleanedHistory();
-                newConfig = readConfig();
-                writeConfig(newConfig);
-                Thread.Sleep(100); //Update Time: 100
-                triggerADAR();
-                Thread.Sleep(25000); //Update Time: 25000
-                changeFilename("cleaned_data", "cleanedHistory");
-                Thread.Sleep(100); //Update Time: 100
+            //get cleanedForecast
+            getCleanedForecast();
+            newConfig = readConfig();
+            writeConfig(newConfig);
+            triggerADAR();
+            Thread.Sleep(25000); //Update Time: 25000
+            changeFilename("output", "cleanedForecast");
+            Thread.Sleep(100); //Update Time: 100
 
-                //get cleanedForecast
-                getCleanedForecast();
-                newConfig = readConfig();
-                writeConfig(newConfig);
-                triggerADAR();
-                Thread.Sleep(25000); //Update Time: 25000
-                changeFilename("output", "cleanedForecast");
-                Thread.Sleep(100); //Update Time: 100
-
-                //get baseForecast
-                forscastType.SelectedIndex = 0;
-                newConfig = readConfig();
-                writeConfig(newConfig);
-                triggerADAR();
-                Thread.Sleep(25000); //Update Time: 25000
-                changeFilename("output", "baseForecast");
-                Thread.Sleep(100); //Update Time: 100
-
-
-                inputData.Text = readOutput(@"longBaseHistory.csv");
-                cleanedData.Text = readOutput(@"cleanedHistory.csv");
-                cleanForecast.Text = readOutput(@"cleanedForecast.csv");
-                actualForecast.Text = readOutput(@"baseForecast.csv");
-            //}
-            //if (forscastType.SelectedIndex == 2)
-            //{
-            //    //get cleanedForecast
-            //    forscastType.SelectedIndex = 1;
-            //    newConfig = readConfig();
-            //    writeConfig(newConfig);
-            //    triggerADAR();
-            //    Thread.Sleep(25000); //Update Time: 25000
-            //    changeFilename("output", "cleanedForecast");
-            //    Thread.Sleep(100); //Update Time: 100
-
-
-            //    //get holidayForecast
-            //    forscastType.SelectedIndex = 2;
-            //    newConfig = readConfig();
-            //    writeConfig(newConfig);
-            //    triggerADAR();
-            //    Thread.Sleep(25000); //Update Time: 25000
-            //    changeFilename("output", "holidayForecast");
-            //    Thread.Sleep(100); //Update Time: 100
-
-            //    inputData.Text = readOutput(@"longBaseHistory.csv");
-            //    cleanForecast.Text = readOutput(@"cleanedForecast.csv");
-            //    holidayForecast.Text = readOutput(@"holidayForecast.csv");
-            //}
+            //get baseForecast
+            forscastType.SelectedIndex = 0;
+            newConfig = readConfig();
+            writeConfig(newConfig);
+            triggerADAR();
+            Thread.Sleep(25000); //Update Time: 25000
+            changeFilename("output", "baseForecast");
+            Thread.Sleep(100); //Update Time: 100
+            
+            inputData.Text = readOutput(@"longBaseHistory.csv");
+            cleanedData.Text = readOutput(@"cleanedHistory.csv");
+            cleanForecast.Text = readOutput(@"cleanedForecast.csv");
+            actualForecast.Text = readOutput(@"baseForecast.csv");
 
         }
 
