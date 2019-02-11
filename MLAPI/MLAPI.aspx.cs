@@ -159,41 +159,81 @@ namespace HaloBI.Prism.Plugin
 
             dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
             dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
+            if (forscastType.SelectedIndex == 0)
+            {
+                List<List<string>> newConfig = readConfig();
+                writeConfig(newConfig);
 
-            List<List<string>> newConfig = readConfig();
-            writeConfig(newConfig);
-            
-            changeFilename("full_base_data", "longBaseHistory");
+                triggerADAR();
+                Thread.Sleep(35000); //Run time for ADAR: 25000ms
 
-            //get cleanedHistory
-            getCleanedHistory();
-            newConfig = readConfig();
-            writeConfig(newConfig);
-            triggerADAR();
-            Thread.Sleep(35000); //Update Time: 25000
-            changeFilename("cleaned_data", "cleanedHistory");
+                changeFilename("full_base_data", "longBaseHistory");
+                inputData.Text = readOutput(@"longBaseHistory.csv");
 
-            //get cleanedForecast
-            getCleanedForecast();
-            newConfig = readConfig();
-            writeConfig(newConfig);
-            triggerADAR();
-            Thread.Sleep(35000); //Update Time: 25000
-            changeFilename("output", "cleanedForecast");
+                changeFilename("output", "baseForecast");
+                actualForecast.Text = readOutput(@"baseForecast.csv");
+            }
+            if (forscastType.SelectedIndex == 1)
+            {
+                List<List<string>> newConfig = readConfig();
+                writeConfig(newConfig);
 
-            //get baseForecast
-            forscastType.SelectedIndex = 0;
-            newConfig = readConfig();
-            writeConfig(newConfig);
-            triggerADAR();
-            Thread.Sleep(35000); //Update Time: 25000
-            changeFilename("output", "baseForecast");
-            
-            inputData.Text = readOutput(@"longBaseHistory.csv");
-            cleanedData.Text = readOutput(@"cleanedHistory.csv");
-            cleanForecast.Text = readOutput(@"cleanedForecast.csv");
-            actualForecast.Text = readOutput(@"baseForecast.csv");
+                changeFilename("full_base_data", "longBaseHistory");
 
+                //get cleanedHistory
+                getCleanedHistory();
+                newConfig = readConfig();
+                writeConfig(newConfig);
+                triggerADAR();
+                Thread.Sleep(35000); //Run time for ADAR: 25000ms
+                changeFilename("cleaned_data", "cleanedHistory");
+
+                //get cleanedForecast
+                getCleanedForecast();
+                newConfig = readConfig();
+                writeConfig(newConfig);
+                triggerADAR();
+                Thread.Sleep(35000); //Run time for ADAR: 25000ms
+                changeFilename("output", "cleanedForecast");
+
+                //get baseForecast
+                forscastType.SelectedIndex = 0;
+                newConfig = readConfig();
+                writeConfig(newConfig);
+                triggerADAR();
+                Thread.Sleep(35000); //Run time for ADAR: 25000ms
+                changeFilename("output", "baseForecast");
+
+                inputData.Text = readOutput(@"longBaseHistory.csv");
+                cleanedData.Text = readOutput(@"cleanedHistory.csv");
+                cleanForecast.Text = readOutput(@"cleanedForecast.csv");
+                actualForecast.Text = readOutput(@"baseForecast.csv");
+            }
+            if (forscastType.SelectedIndex == 2)
+            {
+                List<List<string>> newConfig = readConfig();
+                writeConfig(newConfig);
+
+                triggerADAR();
+                Thread.Sleep(35000); //Run time for ADAR: 25000ms
+
+                changeFilename("full_base_data", "longBaseHistory");
+                inputData.Text = readOutput(@"longBaseHistory.csv");
+                
+                changeFilename("output", "holidayForecast");
+                holidayForecast.Text = readOutput(@"holidayForecast.csv");
+
+
+                forscastType.SelectedIndex = 1;
+                newConfig = readConfig();
+                writeConfig(newConfig);
+
+                triggerADAR();
+                Thread.Sleep(35000); //Run time for ADAR: 25000ms
+
+                changeFilename("output", "cleanedForecast");
+                cleanForecast.Text = readOutput(@"cleanedForecast.csv");
+            }
         }
 
         /// <summary>
