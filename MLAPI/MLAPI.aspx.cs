@@ -157,7 +157,6 @@ namespace HaloBI.Prism.Plugin
             var dataLayer = new DataLayer(context);
             var timeSeriesDataTable = dataLayer.GetDataTable("002");
 
-
             dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
             dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
 
@@ -165,34 +164,30 @@ namespace HaloBI.Prism.Plugin
             writeConfig(newConfig);
             
             changeFilename("full_base_data", "longBaseHistory");
-            
+
             //get cleanedHistory
             getCleanedHistory();
             newConfig = readConfig();
             writeConfig(newConfig);
-            Thread.Sleep(100); //Update Time: 100
             triggerADAR();
-            Thread.Sleep(25000); //Update Time: 25000
+            Thread.Sleep(35000); //Update Time: 25000
             changeFilename("cleaned_data", "cleanedHistory");
-            Thread.Sleep(100); //Update Time: 100
 
             //get cleanedForecast
             getCleanedForecast();
             newConfig = readConfig();
             writeConfig(newConfig);
             triggerADAR();
-            Thread.Sleep(25000); //Update Time: 25000
+            Thread.Sleep(35000); //Update Time: 25000
             changeFilename("output", "cleanedForecast");
-            Thread.Sleep(100); //Update Time: 100
 
             //get baseForecast
             forscastType.SelectedIndex = 0;
             newConfig = readConfig();
             writeConfig(newConfig);
             triggerADAR();
-            Thread.Sleep(25000); //Update Time: 25000
+            Thread.Sleep(35000); //Update Time: 25000
             changeFilename("output", "baseForecast");
-            Thread.Sleep(100); //Update Time: 100
             
             inputData.Text = readOutput(@"longBaseHistory.csv");
             cleanedData.Text = readOutput(@"cleanedHistory.csv");
@@ -201,12 +196,20 @@ namespace HaloBI.Prism.Plugin
 
         }
 
+        /// <summary>
+        /// Copies the file and changes the name.
+        /// </summary>
+        /// <param name="inital"></param>
+        /// <param name="changed"></param>
         private void changeFilename(String inital, String changed)
         {
             File.Delete(@"C:\Halo\ADAR\inputs and outputs\" + changed + ".csv");
             File.Copy(@"C:\Halo\ADAR\inputs and outputs\" + inital + ".csv", @"C:\Halo\ADAR\inputs and outputs\" + changed + ".csv", true);
         }
 
+        /// <summary>
+        /// Changes input_to_ADAR_temp back to input_to_ADAR to pass in shorter data for forecasts
+        /// </summary>
         private void getCleanedForecast()
         {
             //Returns the the cleaned forecast after running
@@ -214,6 +217,10 @@ namespace HaloBI.Prism.Plugin
             File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", true);
         }
 
+        /// <summary>
+        /// First functionto be called: deletes all the leftover file from previous run & 
+        /// makes input_to_ADAR long data to get cleaned_base_Data
+        /// </summary>
         private void getCleanedHistory()
         {
             File.Delete(@"longBaseHistory.csv");
@@ -258,6 +265,9 @@ namespace HaloBI.Prism.Plugin
             return outputLines;
         }
 
+        /// <summary>
+        /// Main process triggering call to Machine Learning Workbench
+        /// </summary>
         protected void triggerADAR()
         {
             //Triggers the background Process to recieve cmd output
