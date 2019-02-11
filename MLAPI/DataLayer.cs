@@ -26,15 +26,13 @@ namespace HaloBI.Prism.Plugin
         /// Get data cache for specified paneId and write to a file
         /// </summary>
         /// <param name="paneId"></param>
-        internal void WriteTimeSeriesToFile(DataTable dt, string filePath) //Error is not writing to file
+        internal void WriteTimeSeriesToFile(DataTable dt, string filePath)
         {
             String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
             String data = "";
             StringBuilder dataStr = new StringBuilder();
-
             dataStr.AppendLine(headerStr);
-
-
+            
             foreach (DataRow r in dt.Rows)
             {
                 data += "1,1," + r["name"] + "," + r["col0"] + "\n";
@@ -42,7 +40,6 @@ namespace HaloBI.Prism.Plugin
 
             dataStr.Append(data);
             File.WriteAllText(filePath, dataStr.ToString());
-
         }
         
         internal void WriteADARInput(DataTable dt, string filePath)
@@ -95,5 +92,47 @@ namespace HaloBI.Prism.Plugin
             var cacheKey = $"{sessionId}-{viewId}-{paneId}";
             return cacheKey;
         }
-	}
+
+        /// <summary>
+        /// Get data cache for specified paneId and write to a file with Slice information
+        /// </summary>
+        /// <param name="paneId"></param>
+        internal void WriteSlicedSeriesToFile(DataTable dataSeries, DataTable sliceTable, string filePath)
+        {
+            String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
+            String data = "";
+            StringBuilder dataStr = new StringBuilder();
+            dataStr.AppendLine(headerStr);
+
+            for (var i = 0; i < dataSeries.Rows.Count; i++)
+            {
+                DataRow r = dataSeries.Rows[i];
+                DataRow s = sliceTable.Rows[i];
+
+                data += s[""] + "," + s[""] + "," + r["name"] + "," + r["col0"] + "\n";
+            }
+
+            dataStr.Append(data);
+            File.WriteAllText(filePath, dataStr.ToString());
+        }
+
+        internal void WriteSlicedADARInput(DataTable dt, string filePath)
+        {
+            String headerStr = "SKU_NUMBER,MASKED_SKU,ORDER_DATE,QUANTITY";
+            String data = "";
+            StringBuilder dataStr = new StringBuilder();
+
+            dataStr.AppendLine(headerStr);
+
+            var maxADAR = dt.Rows.Count - 60;
+            for (var i = 0; i < maxADAR; i++)
+            {
+                DataRow r = dt.Rows[i];
+                data += "1,1," + r["name"] + "," + r["col0"] + "\n";
+            }
+            dataStr.Append(data);
+            File.WriteAllText(filePath, dataStr.ToString());
+
+        }
+    }
 }
