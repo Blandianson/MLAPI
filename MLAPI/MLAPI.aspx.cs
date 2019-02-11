@@ -157,22 +157,8 @@ namespace HaloBI.Prism.Plugin
             var dataLayer = new DataLayer(context);
             var timeSeriesDataTable = dataLayer.GetDataTable("002");
 
-            #region Slicing on data
-
-            //var sliceDataTable = dataLayer.GetDataTable("001");
-
-            ////for (var i = 0; i < sliceDataTable.Rows.Count; i++)
-            //foreach (DataRow r in sliceDataTable.Rows)
-            //{
-            //    outputText.Text += r["name"];
-            //}
-            //    //dataLayer.WriteSlicedSeriesToFile(timeSeriesDataTable, sliceDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
-            //    //dataLayer.WriteSlicedADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_for_ADAR.csv");
-
-                #endregion
-
-                dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
-            dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_for_ADAR.csv");
+            dataLayer.WriteTimeSeriesToFile(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\full_base_data.csv");
+            dataLayer.WriteADARInput(timeSeriesDataTable, @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv");
 
             if (forscastType.SelectedIndex == 0)
             {
@@ -263,18 +249,18 @@ namespace HaloBI.Prism.Plugin
         }
 
         /// <summary>
-        /// Changes input_for_ADAR_temp back to input_for_ADAR to pass in shorter data for forecasts
+        /// Changes input_to_ADAR_temp back to input_to_ADAR to pass in shorter data for forecasts
         /// </summary>
         private void getCleanedForecast()
         {
             //Returns the the cleaned forecast after running
-            File.Delete("input_for_ADAR.csv");
-            File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_for_ADAR_temp.csv", @"C:\Halo\ADAR\inputs and outputs\input_for_ADAR.csv", true);
+            File.Delete("input_to_ADAR.csv");
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", true);
         }
 
         /// <summary>
         /// First functionto be called: deletes all the leftover file from previous run & 
-        /// makes input_for_ADAR long data to get cleaned_base_Data
+        /// makes input_to_ADAR long data to get cleaned_base_Data
         /// </summary>
         private void getCleanedHistory()
         {
@@ -282,15 +268,15 @@ namespace HaloBI.Prism.Plugin
             File.Delete(@"cleanedHistory.csv");
             File.Delete(@"cleanedForecast.csv");
             File.Delete(@"baseForecast.csv");
-            File.Delete("input_for_ADAR.csv");
+            File.Delete("input_to_ADAR.csv");
             File.Delete(@"full_base_data.csv");
-            File.Delete(@"input_for_ADAR_temp.csv");
+            File.Delete(@"input_to_ADAR_temp.csv");
             File.Delete("output.csv");
 
 
             //Returns the Cleaned History after running
-            File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_for_ADAR.csv", @"C:\Halo\ADAR\inputs and outputs\input_for_ADAR_temp.csv", true);
-            File.Copy(@"C:\Halo\ADAR\inputs and outputs\full_base_data.csv", @"C:\Halo\ADAR\inputs and outputs\input_for_ADAR.csv", true);
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR_temp.csv", true);
+            File.Copy(@"C:\Halo\ADAR\inputs and outputs\full_base_data.csv", @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv", true);
         }
 
         /// <summary>
@@ -345,7 +331,7 @@ namespace HaloBI.Prism.Plugin
             };
 
             //Pass the parameters to the R Script via cmd argument
-            cmdStartInfo.Arguments = "send -s 38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6 -f 100 -i DESKTOP-SK1K62B -d xxx -t 0 -l C:\\Halo\\ADAR\\AnomalyDetectionAndRemoval.R -p \"inputs and outputs,config_for_ADAR,input_for_ADAR\"";
+            cmdStartInfo.Arguments = "send -s 38CE52DA-BE16-45C5-A0C8-D90EE9A07ED6 -f 100 -i DESKTOP-SK1K62B -d xxx -t 0 -l C:\\Halo\\ADAR\\AnomalyDetectionAndRemoval.R -p \"inputs and outputs,config,input_to_ADAR\"";
             
             Process cmdProcess = new Process
             {
@@ -445,7 +431,7 @@ namespace HaloBI.Prism.Plugin
         /// <returns></returns>
         protected List<List<string>> readConfig()
         {
-            string path = @"C:\Halo\ADAR\inputs and outputs\config_for_ADAR.csv";
+            string path = @"C:\Halo\ADAR\inputs and outputs\config.csv";
             List<List<string>> outputLines = new List<List<string>>();
 
             StreamReader sr = File.OpenText(path);
@@ -590,13 +576,13 @@ namespace HaloBI.Prism.Plugin
         }
 
         /// <summary>
-        /// reads in the input_for_ADAR and gets the first and last date of the data
+        /// reads in the input_to_ADAR and gets the first and last date of the data
         /// </summary>
         /// <param name="startEnd"></param>
         /// <returns></returns>
         protected String GetConfigFirstDataPt(Boolean startEnd) //true = startDate Returned, False = endDate Returned
         {
-            string path = @"C:\Halo\ADAR\inputs and outputs\input_for_ADAR.csv";
+            string path = @"C:\Halo\ADAR\inputs and outputs\input_to_ADAR.csv";
             String outputLines = "";
             var startDate = "";
             var endDate = "";
@@ -640,7 +626,7 @@ namespace HaloBI.Prism.Plugin
         /// </summary>
         private void writeConfig(List<List<string>> newConfig)
         {
-            var filePath = @"C:\Halo\ADAR\inputs and outputs\config_for_ADAR.csv";
+            var filePath = @"C:\Halo\ADAR\inputs and outputs\config.csv";
             String configLine = "";
             StringBuilder sb = new StringBuilder();
             
