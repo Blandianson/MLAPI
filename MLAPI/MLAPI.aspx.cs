@@ -164,7 +164,7 @@ namespace HaloBI.Prism.Plugin
                 writeConfig(newConfig);
 
                 triggerADAR();
-                Thread.Sleep(45000); //Run time for ADAR: 25000ms
+                Thread.Sleep(100000); //Run time for ADAR: 45000
 
                 changeFilename("full_base_data", "longBaseHistory");
                 inputData.Text = readOutput(@"longBaseHistory.csv");
@@ -184,7 +184,7 @@ namespace HaloBI.Prism.Plugin
                 newConfig = readConfig();
                 writeConfig(newConfig);
                 triggerADAR();
-                Thread.Sleep(45000); //Run time for ADAR: 25000ms
+                Thread.Sleep(100000); //Run time for ADAR: 45000
                 changeFilename("cleaned_data", "cleanedHistory");
 
                 //get cleanedForecast
@@ -192,7 +192,7 @@ namespace HaloBI.Prism.Plugin
                 newConfig = readConfig();
                 writeConfig(newConfig);
                 triggerADAR();
-                Thread.Sleep(45000); //Run time for ADAR: 25000ms
+                Thread.Sleep(100000); //Run time for ADAR: 45000
                 changeFilename("output", "cleanedForecast");
 
                 //get baseForecast
@@ -200,7 +200,7 @@ namespace HaloBI.Prism.Plugin
                 newConfig = readConfig();
                 writeConfig(newConfig);
                 triggerADAR();
-                Thread.Sleep(45000); //Run time for ADAR: 25000ms
+                Thread.Sleep(100000); //Run time for ADAR: 45000
                 changeFilename("output", "baseForecast");
 
                 inputData.Text = readOutput(@"longBaseHistory.csv");
@@ -214,7 +214,7 @@ namespace HaloBI.Prism.Plugin
                 writeConfig(newConfig);
 
                 triggerADAR();
-                Thread.Sleep(45000); //Run time for ADAR: 25000ms
+                Thread.Sleep(100000); //Run time for ADAR: 45000
 
                 changeFilename("full_base_data", "longBaseHistory");
                 inputData.Text = readOutput(@"longBaseHistory.csv");
@@ -228,7 +228,7 @@ namespace HaloBI.Prism.Plugin
                 writeConfig(newConfig);
 
                 triggerADAR();
-                Thread.Sleep(45000); //Run time for ADAR: 25000ms
+                Thread.Sleep(100000); //Run time for ADAR: 45000
 
                 changeFilename("output", "cleanedForecast");
                 cleanForecast.Text = readOutput(@"cleanedForecast.csv");
