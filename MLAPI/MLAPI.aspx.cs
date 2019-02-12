@@ -141,8 +141,6 @@ namespace HaloBI.Prism.Plugin
         }
 
         #endregion
-
-        #region  Working code
         
         /// <summary>
         /// Triggers Forecasting R script and returns TS forecast in text form
@@ -292,7 +290,7 @@ namespace HaloBI.Prism.Plugin
 
             while (!File.Exists(path)) ///This was the error, file was being written to another file.
             {
-                outputText.Text += "Data is loading";
+                //outputText.Text += "Data is loading";
                 Thread.Sleep(5000);
             }
 
@@ -305,6 +303,8 @@ namespace HaloBI.Prism.Plugin
             sr.Close();
             return outputLines;
         }
+
+        #region Emulate Machine Leaning Workbench command call
 
         /// <summary>
         /// Main process triggering call to Machine Learning Workbench
@@ -423,7 +423,8 @@ namespace HaloBI.Prism.Plugin
             return cmdProcessResp;
         }
 
-        #region Change Config
+        #endregion
+        #region Change Config to ADAR
 
         /// <summary>
         /// Reads in the config data from file
@@ -447,21 +448,6 @@ namespace HaloBI.Prism.Plugin
             }
             sr.Close();
 
-            //Output Each Line of the inner Array
-            //foreach (var sublist in outputLines)
-            //{
-            //    outputText.Text += String.Join(", ", sublist) + "\n";
-            //}
-
-            //Output Each element of the inner Array
-            //foreach (var sublist in outputLines)
-            //{
-            //    foreach (var element in sublist)
-            //    {
-            //        outputText.Text += element + "\n";
-
-            //    }
-            //}
             List<List<string>> configData = configStrToDatTab(outputLines);
             return outputLines;
         }
@@ -637,8 +623,6 @@ namespace HaloBI.Prism.Plugin
             sb.Append(configLine);
             File.WriteAllText(filePath, sb.ToString());
         }
-
-        #endregion
 
         #endregion
     }

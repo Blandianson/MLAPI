@@ -93,9 +93,9 @@ select {
 }
 
 #parameters,
-#outputText {
+/*#outputText {
     height: 150px;
-}
+}*/
 
 .highcharts-background {
     stroke-width: 1px;

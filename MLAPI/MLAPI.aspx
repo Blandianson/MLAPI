@@ -21,12 +21,12 @@
 
         <div id="wrapperForm" class="container">
 
-            <div class="row"> <%--IO--%>                
-                <div class="col-sm-12">
+            <%--<div class="row">--%> <%--IO--%>                
+                <%--<div class="col-sm-12">
                     <div class="header" ><asp:Label runat="server" ID="outputResultLabel" CssClass="fieldLabel">Forecasted Results</asp:Label></div>
                     <asp:textbox id="outputText" runat="server" CssClass="textIObox field-long" TextMode="MultiLine"/>
                 </div>
-            </div>
+            </div>--%>
 
 
             <div class="row"> <%--Forecast Type--%>   
